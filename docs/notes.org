@@ -2,9 +2,21 @@
 #+author: Alexander Bustos
 
 ** Week 0, 5/15/2023 - 5/21/2023
-  - The most notable thing that happened this week was discussing and deciding on a project topic
-    with Dr. Gunter. The project title will be *A Low-Cost Data Acquisition, Visualization, and Test
-    Management Platform for CubeSat Subsystems.*
+  - This week I discussed and decided on a project topic with Dr. Gunter. The project title is 
+    *A Low-Cost Data Acquisition, Visualization, and Test Management Platform for CubeSat Subsystems.*
 
 ** Week 1, 5/22/2023 - 5/28/2023
-   - This week I decided on the technology stack that I intend on using for the project.
+   - This week I researched and decided on the software technology stack that I intend on using for
+     the project. The key technologies I will be using are described below.
+*** Frontend
+    - SvelteKit and Svelte
+    - TailwindCSS + DaisyUI
+    - Apache ECharts
+*** Backend
+    - FastAPI
+    - SQLite
+*** Interface
+    - OpenAPI
+
+** Week 2, 5/29/2023 - 6/4/2023
+
