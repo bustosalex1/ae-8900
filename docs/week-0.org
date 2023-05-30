@@ -1,0 +1,8 @@
+#+title: AE 8900, Week 0
+#+author: Alexander Bustos
+
+* Week 0 (5/15/2023 - 5/21/2023) Notes
+  - The most notable thing that happened this week was discussing and deciding on a project topic
+    with Dr. Gunter. The projec title will be *A Low-Cost Data Acquisition, Visualization, and Test
+    Management Platform for CubeSat Subsystems.*
+
