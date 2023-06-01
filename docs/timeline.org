@@ -12,6 +12,7 @@
 ** Core Goals
    - Learn more about test automation
    - Learn more about full stack web development
+   - Learn more about what makes a... good developer experience.
    - Develop using current best practices
 
 ** Week 0, 05/15/2023 - 05/21/2023
@@ -57,6 +58,7 @@
 *** Goals
     - [ ] Begin writing AE 8900 report.
 *** Demos
+
 ** Week 9, 07/17/2023 - 07/23/2023
 *** Goals
 
