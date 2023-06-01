@@ -2,81 +2,79 @@
 #+author: Alexander Bustos
 
 ** Problem Statement
-This project seeks to improve validation testing and data visualization for CubeSat subsystems. When developing subsystems
-for CubeSats, it can be difficult or tedious to certify that the subsystem meets a particular set
-of requirements. Some real examples of this include:
-	- Verifying that the rate of leakage from the target subsystem on TARGIT was sufficiently
-	      low, such that there would be enough nitrogen left in the tank to inflate the balloon on orbit.
-	- Verifying that the rate of voltage leakage from the OrCa 2 custom EPS was sufficiently
-	      low, such that the EPS will be able to deliver power to the satellite upon deployment.
+   This project seeks to improve validation testing and data visualization for CubeSat subsystems.
+   When developing subsystems for CubeSats, it can be difficult or tedious to certify that the
+   subsystem meets a particular set of requirements. Some real examples of this include:
 
-Both of these problems were solved manually, by having someone measure the pressure/voltage of each
-system periodically over the course of several days. However, this process is tedious, prone to
-inaccuracies, and does not scale well. Typically it is important to have a fully functioning
-flight spare for most subsystems, effectively doubling the amount of work spent on validating
-subsystem requirements.
-Additionally, if projects were to require multiples of a subsystem, the work needed to validate
-that each instance of a subsystem met requirements would similarly multiply in magnitude.
+   - Verifying that the rate of leakage from the target subsystem on TARGIT was sufficiently low,
+     such that there would be enough nitrogen left in the tank to inflate the balloon on orbit.
+   - Verifying that the rate of voltage leakage from the OrCa 2 custom EPS was sufficiently low,
+     such that the EPS will be able to deliver power to the satellite upon deployment.
 
-Another difficult aspect of CubeSat subsystem development is data validation. It is common for
-subsystems to collect a variety of data relevant to its operation. Typically some data post-processing
-occurs on the subsystem itself, as many of these data products are derived from more fundamental
-values. An example of this would be the Euler angles provided by the target subsystem on TARGIT,
-which were derived from accelerometer and  gyroscope measurements of linear acceleration and angular
-velocity. However, it can be time-consuming to confirm the accuracy of these data products. While
-it can be easy to visualize certain types of data, other types (such as orientation angles) can be
-more difficult to validate, and would require some level of custom software to visualize and debug.
+   Both of these problems were solved manually, by having someone measure the pressure/voltage of
+   each system periodically over the course of several days. However, this process is tedious, prone
+   to inaccuracies, and does not scale well. Typically it is important to have a fully functioning
+   flight spare for most subsystems, effectively doubling the amount of work spent on validating
+   subsystem requirements. Additionally, if projects were to require multiples of a subsystem, the
+   work needed to validate that each instance of a subsystem met requirements would similarly
+   multiply in magnitude.
+
+   Another difficult aspect of CubeSat subsystem development is data validation. It is common for
+   subsystems to collect a variety of data relevant to its operation. Typically some data
+   post-processing occurs on the subsystem itself, as many of these data products are derived from
+   more fundamental values. An example of this would be the Euler angles provided by the target
+   subsystem on TARGIT, which were derived from accelerometer and  gyroscope measurements of linear
+   acceleration and angular velocity. However, it can be time-consuming to confirm the accuracy of
+   these data products. While it can be easy to visualize certain types of data, other types (such
+   as orientation angles) can be more difficult to validate, and would require some level of custom
+   software to visualize and debug.
 
 ** Project Description
-To address the issues discussed in the problem statement, I propose a web application that can
-be deployed to a Raspberry Pi. The web application will use the Pi's hardware interfaces to collect
-data and interact with sensors and CubeSat subsystems. This data will be stored on the Pi and made
-available to users via a browser-accessible user interface, which will provide users with real time data
-visualization, analysis, and test-running capabilities. The application will leverage an existing
-test automation framework such as Robot Framework to
-enable long-running data collection and testing regimes, effectively automating the problem of
-validation testing.
+   To address the issues discussed in the problem statement, I propose a web application that can be
+   deployed to a Raspberry Pi. The web application will use the Pi's hardware interfaces to collect
+   data and interact with sensors and CubeSat subsystems. This data will be stored on the Pi and
+   made available to users via a browser-accessible user interface, which will provide users with
+   real time data visualization, analysis, and test-running capabilities. The application will
+   leverage an existing test automation framework such as Robot Framework to enable long-running
+   data collection and testing regimes, effectively automating the problem of validation testing.
 
 ** Impact
-If successful, this project could make it easier for CubeSat researchers to perform a
-variety of validation tests on custom hardware, or systems of custom hardware. It could also improve
-CubeSat integration, by providing researchers with an easily accessible platform to test APIs and
-interfaces that might not otherwise be tested until integration. Finally, by making the process of
-retreiving and validating data from a subsystem easier, this project could help researchers identify
-potential issues with subsystem data collection and processing techniques earlier in the development
-cycle, ultimately leading to higher quality data products.
+   If successful, this project could make it easier for CubeSat researchers to perform a variety of
+   validation tests on custom hardware, or systems of custom hardware. It could also improve CubeSat
+   integration, by providing researchers with an easily accessible platform to test APIs and
+   interfaces that might not otherwise be tested until integration. Finally, by making the process
+   of retreiving and validating data from a subsystem easier, this project could help researchers
+   identify potential issues with subsystem data collection and processing techniques earlier in the
+   development cycle, ultimately leading to higher quality data products.
 
 ** Prior Work
-Currently, applications like NASA OpenMCT and Grafana are sometimes used as data visualization
-tools for CubeSats, but these are often used as telemetry dashboards for deployed CubeSats.
-Additionally, while NASA OpenMCT and Grafana have excellent extensibility and data visualization
-features, they don't provide acceptance testing functionality by default, and are generally not used
-to interact with a system under test.
-
-Node-RED is another web application that is well suited for process automation and data collection,
-but it is not designed to perform validation testing. It could be a possible candidate as a
-component of the overall system described.
+   Currently, applications like NASA OpenMCT and Grafana are sometimes used as data visualization
+   tools for CubeSats, but these are often used as telemetry dashboards for deployed CubeSats.
+   Additionally, while NASA OpenMCT and Grafana have excellent extensibility and data visualization
+   features, they don't provide acceptance testing functionality by default, and are generally not
+   used to interact with a system under test.
+   Node-RED is another web application that is well suited for process automation and data
+   collection, but it is not designed to perform validation testing. It could be a possible
+   candidate as a component of the overall system described.
 
 ** Expected Work
-This project will consist of three main bodies of work:
-- Frontend: The project frontend will consist of a web server to serve users a
-	      HTML / CSS / TypeScript-based user interface, using a component-based frontend framework such as
-	      Svelte.
-- Backend: The project backend will consist of a separate web server with an API
-	      that can be accessed by frontend clients. This part of the project will encapsulate the
-          software used to interface with the system under test via the Pi's hardware interfaces.
-- System Under Test: In order to demonstrate the proposed project functionality, a
-	      simple microcontroller-based demonstrator unit will be built to serve as a hypothetical
-          CubeSat subsystem under test. The microcontroller will collect data from some common
-          sensors, and a protocol will be developed to enable communication of relevant system data
-          to the Raspberry Pi.
+   This project will consist of three main bodies of work:
+   - Frontend: The project frontend will consist of a web server to serve users a HTML / CSS /
+     TypeScript-based user interface, using a component-based frontend framework such as Svelte.
+   - Backend: The project backend will consist of a separate web server with an API that can be
+     accessed by frontend clients. This part of the project will encapsulate the software used to
+     interface with the system under test via the Pi's hardware interfaces. 
+   - System Under Test: In order to demonstrate the proposed project functionality, a simple
+     microcontroller-based demonstrator unit will be built to serve as a hypothetical CubeSat
+     subsystem under test. The microcontroller will collect data from some common sensors, and a
+     protocol will be developed to enable communication of relevant system data to the Raspberry Pi.
 
 ** Expected Outcomes / Deliverables
-This project will produce the following deliverables:
-  - A minimum viable product of the described web application, capable of running tests and providing
-    data visualization and analysis tools to users.
-  - A version controlled repository of the project's source code.
-  - An operating system image with the application preinstalled, such that it can be easily
-    distributed to new Raspberry Pis.
-  - A simple microcontroller with a variety of connected sensors, to be used as an example subsystem
-    under test and to demonstrate the capabilities of the tool.
+   This project will produce the following deliverables:
+   - A minimum viable product of the described web application, capable of running tests and
+     providing data visualization and analysis tools to users.
+   - A version controlled repository of the project's source code.
+   - An operating system image with the application preinstalled, such that it can be easily
+     distributed to new Raspberry Pis.
+   - A simple microcontroller with a variety of connected sensors, to be used as an example
+     subsystem under test and to demonstrate the capabilities of the tool.

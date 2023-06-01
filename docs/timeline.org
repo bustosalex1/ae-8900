@@ -1,6 +1,19 @@
 #+title: AE 8900 Timeline
 #+author: Alexander Bustos
 
+** Core Project Functionality
+   - Real-time data visualization
+   - Long-running validation testing (jobs?)
+   - Analog data collection (voltages)
+   - Digital data collection (messages over hardware interfaces)
+   - Multiple configuration support
+   - Data recording and re-watching
+
+** Core Goals
+   - Learn more about test automation
+   - Learn more about full stack web development
+   - Develop using current best practices
+
 ** Week 0, 05/15/2023 - 05/21/2023
 *** Goals
     - [X] Determine project topic.
@@ -12,30 +25,38 @@
 ** Week 2, 05/29/2023 - 06/04/2023
 *** Goals
     - [X] Set up project git repo.
-    - [X] Scaffold frontend and backend. All I mean by this is use existing tools to set up the
-      projects appropriately.
+    - [X] Scaffold frontend and backend. All I mean by this is use existing tools to set up each
+      section of the project using best practices.
     - [ ] Flash Raspberry Pi with Raspbian Lite (or Arch for ARM?).
-    - [ ] 
-
+    - [ ] Identify hardware sensors for demo System Under Test.
+    - [ ] Begin prototyping frontend.
 
 ** Week 3, 06/05/2023 - 06/11/2023
 *** Goals
+    - [ ] Prototype multiple configuration support.
+*** Demos
+    - [ ] Demonstrate real-time data visualization.
 
 ** Week 4, 06/12/2023 - 06/18/2023
 *** Goals
+    - [ ] Prototype real-time data collection using Raspberry 
 
 ** Week 5, 06/19/2023 - 06/25/2023
 *** Goals
+*** Demos
 
 ** Week 6, 06/26/2023 - 07/02/2023
 *** Goals
+*** Demos
 
 ** Week 7, 07/03/2023 - 07/09/2023
 *** Goals 
+*** Demos
 
 ** Week 8, 07/10/2023 - 07/16/2023
 *** Goals
-
+    - [ ] Begin writing AE 8900 report.
+*** Demos
 ** Week 9, 07/17/2023 - 07/23/2023
 *** Goals
 
