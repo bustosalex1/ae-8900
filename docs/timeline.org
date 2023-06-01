@@ -7,7 +7,7 @@
    - Analog data collection (voltages)
    - Digital data collection (messages over hardware interfaces)
    - Multiple configuration support
-   - Data recording and re-watching
+   - Data recording and reviewing
 
 ** Core Goals
    - Learn more about test automation
@@ -35,12 +35,13 @@
 ** Week 3, 06/05/2023 - 06/11/2023
 *** Goals
     - [ ] Prototype multiple configuration support.
+    - [ ] Prototype backend database structure.
 *** Demos
     - [ ] Demonstrate real-time data visualization.
 
 ** Week 4, 06/12/2023 - 06/18/2023
 *** Goals
-    - [ ] Prototype real-time data collection using Raspberry 
+    - [ ] Prototype real-time data collection using Raspberry Pi hardware interfaces.
 
 ** Week 5, 06/19/2023 - 06/25/2023
 *** Goals
