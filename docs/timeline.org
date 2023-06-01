@@ -2,26 +2,45 @@
 #+author: Alexander Bustos
 
 ** Week 0, 05/15/2023 - 05/21/2023
+*** Goals
+    - [X] Determine project topic.
 
 ** Week 1, 05/22/2023 - 05/28/2023
+*** Goals
+    - [X] Determine project tech stack.
 
 ** Week 2, 05/29/2023 - 06/04/2023
+*** Goals
+    - [X] Set up project git repo.
+    - [X] Scaffold frontend and backend. All I mean by this is use existing tools to set up the
+      projects appropriately.
+    - [ ] Flash Raspberry Pi with Raspbian Lite (or Arch for ARM?).
+    - [ ] 
+
 
 ** Week 3, 06/05/2023 - 06/11/2023
+*** Goals
 
 ** Week 4, 06/12/2023 - 06/18/2023
+*** Goals
 
 ** Week 5, 06/19/2023 - 06/25/2023
+*** Goals
 
 ** Week 6, 06/26/2023 - 07/02/2023
+*** Goals
 
 ** Week 7, 07/03/2023 - 07/09/2023
+*** Goals 
 
 ** Week 8, 07/10/2023 - 07/16/2023
+*** Goals
 
 ** Week 9, 07/17/2023 - 07/23/2023
+*** Goals
 
 ** Week 10, 07/24/2023 - 07/30/2023
+*** Goals
 
 ** Week 11, 07/31/2023 - 08/06/2023
-
+*** Goals
