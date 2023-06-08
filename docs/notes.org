@@ -58,3 +58,16 @@
    I also flashed the Raspberry Pi SD card with Raspberry Pi OS Lite.
 
 ** Week 3 6/5/2023 - 6/11/2023
+   This week I met with Dr. Gunter to discuss the state of my project so far. We met on 6/08/2023.
+   Some meeting notes are below:
+   - Dr. Gunter's lab is starting to produce a number of custom EPS boards for an undergraduate
+     class coming up in the fall, and it would be cool to be able to test them with this project.
+     This would be useful in helping to deliver the EPS boards and also serve as a real
+     demonstration of project capabilities.
+   - The timeline for the above would start around July, so it would be necessary to have basic
+     functionality across the software stack operational by then.
+   - It would be cool to open source the project to share with the CubeSat community, and
+     potentially work on it as a journal paper.
+   - In general, the only requirement for configuring the project system to test something should be
+     an ICD or API.
+
