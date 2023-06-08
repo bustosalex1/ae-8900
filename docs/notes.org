@@ -2,21 +2,57 @@
 #+author: Alexander Bustos
 
 ** Week 0, 5/15/2023 - 5/21/2023
-  - This week I discussed and decided on a project topic with Dr. Gunter. The project title is 
+   This week I discussed and decided on a project topic with Dr. Gunter. The project title is 
     *A Low-Cost Data Acquisition, Visualization, and Test Management Platform for CubeSat Subsystems.*
 
 ** Week 1, 5/22/2023 - 5/28/2023
-   - This week I researched and decided on the software technology stack that I intend on using for
-     the project. The key technologies I will be using are described below.
+   This week I researched and decided on the software technology stack that I intend on using for
+   the project. The key technologies I will be using are described below, as well as some
+   rationale.
 *** Frontend
-    - SvelteKit and Svelte
-    - TailwindCSS + DaisyUI
-    - Apache ECharts
+**** SvelteKit and Svelte
+     I've definitely enjoyed using Svelte a lot more than React. I would say the two main reasons I
+     selected Svelte as the component framework for this project are its reactivity model, which I
+     think will make working with a lot of data and chart components easier, and the nice built in
+     features in SvelteKit that improve developer experience, like path aliases and file system
+     routing.
+
+**** TailwindCSS + DaisyUI
+     For styling UI components I will be using TailwindCSS and DaisyUI, partially because I would
+     like to leverage some experience I already have with these tools, and because outside of some
+     data visualization, I don't think I will need a lot of crazy UI components that might warrant a
+     heavier solution like MUI.
+
+**** Apache ECharts
+     Data visualization is a core component of my project. Instead of using a low level tool like
+     ~d3.js~, which I have some experience with, I have decided to give Apache ECharts a try because
+     it comes with a wide array of pre-built data visualization tools, supports HTML Canvas
+     rendering for larger graphs, and has good support for visualizing real time data.
+     [[https://www.youtube.com/watch?v=oA3MDCxNpFU][This]] video helped highlight some of the
+     tradeoffs between ~d3.js~ and ECharts for me.
+
 *** Backend
-    - FastAPI
-    - SQLite
-*** Interface
-    - OpenAPI
+**** FastAPI
+     I have decided to use FastAPI as the web server framework to power the project backend. In the
+     past I have tried Django and Flask, and although Django's ORM is very nice, I think that it
+     might be a bit overkill for this application. I also like that FastAPI adheres to the OpenAPI
+     spec, and can be used (I think?) to generate API stubs in other languages, which could help
+     with avoiding code duplication. 
 
 ** Week 2, 5/29/2023 - 6/4/2023
+   This week I spent some time setting up project structures and environments and getting a git repo
+   setup for the project. The frontend was pretty straightforward to setup, I just used
+   #+begin_src bash
+   npm create svelte@latest
+   #+end_src
+   to scaffold a SvelteKit project with pretty standard tooling: TypeScript, Prettier, etc. I also
+   decided to try out ~pnpm~ instead of ~yarn~ or ~npm~, which has been good so far. Honestly I
+   don't know enough about software development to really appreciate why ~pnpm~ is "better" than the
+   alternatives, but it seems like it's what all the cool people are using.
 
+   For the backend I am also trying something new with ~venv~ instead of what I usually use for
+   virtual environments, which is ~conda~. I figured that since I am working in a pure Python
+   backend, I should maybe try it out and see if it is a reasonable alternative to ~conda~. I
+   always felt weird using two package managers anyways.
+
+** Week 3 6/5/2023 - 6/11/2023

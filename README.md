@@ -1,4 +1,4 @@
-# AE 8900
+# Alex's AE 8900 Project
 
 A repo for my AE 8900 project.
 
