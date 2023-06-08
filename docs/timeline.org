@@ -1,6 +1,13 @@
 #+title: AE 8900 Timeline
 #+author: Alexander Bustos
 
+** Basically
+   1. Setup environments/dependencies/stuff.
+   2. Develop data collection and visualization functionality.
+   3. Utilize the above functionality to develop long-running automated test functionality.
+   4. Extend system to support different configurations.
+   5. Develop a CI/CD pipeline to build new releases.
+
 ** Core Project Functionality
    - Real-time data visualization
    - Long-running validation testing (jobs?)
@@ -14,6 +21,8 @@
    - Learn more about full stack web development
    - Learn more about what makes a... good developer experience.
    - Develop using current best practices
+   - Learn more about dev tools in general, like good CI/CD practices, while also avoiding
+     overcomplicating things
 
 ** Week 0, 05/15/2023 - 05/21/2023
 *** Goals
@@ -28,43 +37,64 @@
     - [X] Set up project git repo.
     - [X] Scaffold frontend and backend. All I mean by this is use existing tools to set up each
       section of the project using best practices.
-    - [ ] Flash Raspberry Pi with Raspbian Lite (or Arch for ARM?).
-    - [ ] Identify hardware sensors for demo System Under Test.
-    - [ ] Begin prototyping frontend.
+    - [X] Flash Raspberry Pi with Raspberry Pi OS Lite (or Arch for ARM?).
 
 ** Week 3, 06/05/2023 - 06/11/2023
 *** Goals
-    - [ ] Prototype multiple configuration support.
-    - [ ] Prototype backend database structure.
+    - [ ] Prototype frontend structure. I expect this goal (and the one below it) to continue in
+      future weeks.
+    - [ ] Prototype backend structure.
+    - [ ] Identify hardware sensors for demo System Under Test.
 *** Demos
-    - [ ] Demonstrate real-time data visualization.
+    - [ ] A sort of "Hello World" demo between the frontend and the backend, showing that they can
+      communicate with each other.
 
 ** Week 4, 06/12/2023 - 06/18/2023
 *** Goals
     - [ ] Prototype real-time data collection using Raspberry Pi hardware interfaces.
+    - [ ] Prototype system under test demonstrator; verify that it can interact with the Pi.
 
 ** Week 5, 06/19/2023 - 06/25/2023
 *** Goals
+    - [ ] Continue developing frontend and backend as needed.
+    - [ ] Prototype test-running capability.
+
 *** Demos
+    - [ ] Demonstrate real-time data visualization using real sensor data.
 
 ** Week 6, 06/26/2023 - 07/02/2023
 *** Goals
+    - [ ] Prototype multiple configurations.
+    - [ ] Continue developing test-running capability.
 *** Demos
+    - [ ] Demonstrate different layouts/APIs when switching configurations.
 
 ** Week 7, 07/03/2023 - 07/09/2023
-*** Goals 
+*** Goals
+    - [ ] Continue developing test-running capability.
+    - [ ] Continue developing multiple configuration capability as needed.
 *** Demos
+    - [ ] Demonstrate a simple, long running test using real data.
 
 ** Week 8, 07/10/2023 - 07/16/2023
 *** Goals
-    - [ ] Begin writing AE 8900 report.
+    - [ ] Begin writing report.
+    - [ ] Create Raspberry Pi image with project software pre-installed.
 *** Demos
 
 ** Week 9, 07/17/2023 - 07/23/2023
 *** Goals
+    - [ ] Continue writing report as needed.
+    - [ ] Investigate developing a GitHub Actions pipeline to automatically build new images for new
+      versions.
 
 ** Week 10, 07/24/2023 - 07/30/2023
 *** Goals
+    - [ ] Continue writing report as needed.
+    - [ ] Continue developing GitHub Actions pipeline for building images.
+*** Demos
+    - [ ] Demonstrate CI/CD functionality for automatically building images.
 
 ** Week 11, 07/31/2023 - 08/06/2023
 *** Goals
+    - [ ] Review and proofread report.

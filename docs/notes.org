@@ -55,4 +55,6 @@
    backend, I should maybe try it out and see if it is a reasonable alternative to ~conda~. I
    always felt weird using two package managers anyways.
 
+   I also flashed the Raspberry Pi SD card with Raspberry Pi OS Lite.
+
 ** Week 3 6/5/2023 - 6/11/2023
