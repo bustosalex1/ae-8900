@@ -1,0 +1,10 @@
+* Alex's AE 8900 Frontend
+  This is just a SvelteKit frontend right now. I used ~pnpm~, but I guess you can use whatever you
+  want?
+
+  #+begin_src bash
+  pnpm run dev
+  #+end_src
+
+  to get started.
+

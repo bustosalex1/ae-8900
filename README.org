@@ -1,13 +1,13 @@
-# Alex's AE 8900 Project
+* Alex's AE 8900 Project
 
 A repo for my AE 8900 project.
 
-## Repository Structure
+** Repository Structure
 
 I'm not really sure if this is a bad idea, but right now I am managing this repository as a monorepo
 with the frontend and backend in the same repository, like so:
 
-```bash
+#+begin_src bash
 .
 ├── backend
 │   ├── 8900-env
@@ -27,7 +27,7 @@ with the frontend and backend in the same repository, like so:
 │   ├── tsconfig.json
 │   └── vite.config.ts
 └── README.md
-```
+#+end_src
 
 The main top-level directories for this project are `backend`, which is where the FastAPI backend
 resides, `frontend` , where the SvelteKit frontend resides, and `docs`, where I am currently storing
