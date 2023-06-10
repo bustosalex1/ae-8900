@@ -1,11 +1,14 @@
 <script lang="ts">
 	import * as echarts from 'echarts';
 	import { onMount } from 'svelte/internal';
+	import Icon from '../general/Icon.svelte';
+
 	let chartDOM: HTMLElement;
 	let option;
 	let myChart: echarts.ECharts;
 	let w: number;
 	let h: number;
+
 	onMount(() => {
 		console.log('bruh!');
 		myChart = echarts.init(chartDOM, undefined, { width: 600, height: 400 });
@@ -33,5 +36,6 @@
 
 <div class="w-full max-h-96" bind:clientWidth={w} bind:clientHeight={h}>
 	{w} x {h}
+	<Icon name="activity" />
 	<div bind:this={chartDOM} />
 </div>

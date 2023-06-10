@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import ThemeToggle from '$lib/components/general/ThemeToggle.svelte';
 </script>
 
 <div class="w-[100vw] h-[100vh]">

@@ -46,3 +46,13 @@
 .custom-theme .splitpanes--horizontal > .splitpanes__splitter:after {
 	margin-top: 1px;
 }
+
+.feather {
+	width: 20px;
+	height: 20px;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
