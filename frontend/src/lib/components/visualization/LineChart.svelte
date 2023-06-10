@@ -4,7 +4,7 @@
 	import Icon from '../general/Icon.svelte';
 
 	let chartDOM: HTMLElement;
-	let option;
+	let option: echarts.EChartsCoreOption;
 	let myChart: echarts.ECharts;
 	let w: number;
 	let h: number;
@@ -13,6 +13,9 @@
 		console.log('bruh!');
 		myChart = echarts.init(chartDOM, undefined, { width: 600, height: 400 });
 		option = {
+			title: {
+				text: 'Line Chart'
+			},
 			xAxis: {
 				type: 'category',
 				data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -23,7 +26,16 @@
 			series: [
 				{
 					data: [150, 230, 224, 218, 135, 147, 260],
-					type: 'line'
+					type: 'line',
+					smooth: true
+				}
+			],
+			dataZoom: [
+				{
+					id: 'dataZoomX',
+					type: 'slider',
+					xAxisIndex: 0,
+					filterMode: 'filter'
 				}
 			]
 		};
