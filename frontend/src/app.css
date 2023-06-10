@@ -4,7 +4,7 @@
 
 /* insane custom stuff necessary to style svelte-splitpanes */
 .splitpanes.custom-theme .splitpanes__pane {
-	@apply bg-base-100 p-2;
+	@apply bg-base-100;
 }
 
 .splitpanes.custom-theme .splitpanes__splitter {
@@ -48,9 +48,9 @@
 }
 
 .feather {
+	@apply stroke-base-content;
 	width: 20px;
 	height: 20px;
-	stroke: currentColor;
 	stroke-width: 2;
 	stroke-linecap: round;
 	stroke-linejoin: round;

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as echarts from 'echarts';
 	import { onMount } from 'svelte/internal';
-	import Icon from '../general/Icon.svelte';
 
 	let chartDOM: HTMLElement;
 	let option: echarts.EChartsCoreOption;
@@ -10,12 +9,8 @@
 	let h: number;
 
 	onMount(() => {
-		console.log('bruh!');
 		myChart = echarts.init(chartDOM, undefined, { width: 600, height: 400 });
 		option = {
-			title: {
-				text: 'Line Chart'
-			},
 			xAxis: {
 				type: 'category',
 				data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -46,8 +41,6 @@
 	$: myChart && myChart.resize({ width: w, height: h });
 </script>
 
-<div class="w-full max-h-96" bind:clientWidth={w} bind:clientHeight={h}>
-	{w} x {h}
-	<Icon name="activity" />
+<div class="w-full h-96" bind:clientWidth={w} bind:clientHeight={h}>
 	<div bind:this={chartDOM} />
 </div>
