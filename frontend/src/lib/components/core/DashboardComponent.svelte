@@ -19,7 +19,7 @@
 			</button>
 		{/if}
 		<button on:click={toggle}>
-			<Icon name={expanded ? 'minus-square' : 'plus-square'} />
+			<Icon name={expanded ? 'minus' : 'plus'} />
 		</button>
 	</div>
 	{#if expanded}
