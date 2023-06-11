@@ -6,5 +6,5 @@
 </script>
 
 <svg class={`${clazz}`}>
-	<use href={`../../../../node_modules/feather-icons/dist/feather-sprite.svg#${name}`} />
+	<use href={`/images/feather-sprite.svg#${name}`} />
 </svg>

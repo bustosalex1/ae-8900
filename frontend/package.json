@@ -36,7 +36,6 @@
 	"type": "module",
 	"dependencies": {
 		"echarts": "^5.4.2",
-		"feather-icons": "^4.29.0",
 		"sass": "^1.63.2",
 		"svelte-splitpanes": "^0.7.14",
 		"theme-change": "^2.5.0"
