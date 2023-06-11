@@ -2,7 +2,7 @@
 	import Icon from '$lib/components/general/Icon.svelte';
 	import { fly } from 'svelte/transition';
 	import DashboardComponent from './DashboardComponent.svelte';
-	import type { ComponentConfiguration, PanelConfiguration } from '$lib/types';
+	import type { PanelConfiguration } from '$lib/types';
 	import LineChart from '../visualization/LineChart.svelte';
 	export let configuration: PanelConfiguration;
 
