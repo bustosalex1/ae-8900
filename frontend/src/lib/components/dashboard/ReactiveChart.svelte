@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as echarts from 'echarts';
 	import { onMount } from 'svelte/internal';
+	export const key = 'ReactiveChart';
 
 	let chartDOM: HTMLElement;
 	let option: echarts.EChartsCoreOption;
@@ -8,44 +9,30 @@
 	let w: number;
 	let h: number;
 
-	function randomData() {
-		now = new Date(+now + oneDay);
-		value = value + Math.random() * 21 - 10;
-		return {
-			name: now.toString(),
-			value: [[now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'), Math.round(value)]
-		};
-	}
-
 	let data: any[] = [];
-	let now = new Date(1997, 9, 3);
-	let oneDay = 24 * 3600 * 1000;
-	let value = Math.random() * 1000;
-	for (let i = 0; i < 1000; i++) {
-		data.push(randomData());
-	}
 	onMount(() => {
+		let ws = new WebSocket('ws://localhost:8000/ws');
+
+		ws.onmessage = (event) => {
+			const message = JSON.parse(event.data);
+			const timestamp = new Date(message.timestamp * 1000);
+			const newData = [timestamp, message.data];
+			if (data.length > 200) {
+				data.shift();
+			}
+			data.push(newData);
+			myChart &&
+				myChart.setOption({
+					series: [
+						{
+							data: data
+						}
+					]
+				});
+		};
+
 		myChart = echarts.init(chartDOM, undefined, { width: 600, height: 400 });
 		option = {
-			tooltip: {
-				trigger: 'axis',
-				formatter: function (params: any) {
-					params = params[0];
-					var date = new Date(params.name);
-					return (
-						date.getDate() +
-						'/' +
-						(date.getMonth() + 1) +
-						'/' +
-						date.getFullYear() +
-						' : ' +
-						params.value[1]
-					);
-				},
-				axisPointer: {
-					animation: false
-				}
-			},
 			xAxis: {
 				type: 'time',
 				splitLine: {
@@ -59,6 +46,7 @@
 					show: false
 				}
 			},
+			animation: false,
 			series: [
 				{
 					name: 'Fake Data',
@@ -73,17 +61,6 @@
 				}
 			]
 		};
-		setInterval(function () {
-			data.shift();
-			data.push(randomData());
-			myChart.setOption({
-				series: [
-					{
-						data: data
-					}
-				]
-			});
-		}, 250);
 
 		myChart.setOption(option);
 	});

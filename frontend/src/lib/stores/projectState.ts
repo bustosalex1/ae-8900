@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store'
 import type { ProjectConfiguration } from '$lib/types'
-import ReactiveChart from '$lib/components/visualization/ReactiveChart.svelte'
-import LineChart from '$lib/components/visualization/LineChart.svelte'
+import ReactiveChart from '$lib/components/dashboard/ReactiveChart.svelte'
+import LineChart from '$lib/components/dashboard/LineChart.svelte'
+import Websocket from '$lib/components/dashboard/Websocket.svelte'
 
 const createProjectState = () => {
 	const defaultState: ProjectConfiguration = {
@@ -11,13 +12,18 @@ const createProjectState = () => {
 				title: 'Example Panel',
 				components: [
 					{
-						title: 'Voltage, or something',
+						title: 'Voltage, or Something',
 						component: ReactiveChart,
 						props: {}
 					},
 					{
 						title: 'Power',
 						component: LineChart,
+						props: {}
+					},
+					{
+						title: 'Websocket',
+						component: Websocket,
 						props: {}
 					}
 				]

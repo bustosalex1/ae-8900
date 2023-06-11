@@ -3,7 +3,7 @@
 	import { fly } from 'svelte/transition';
 	import DashboardComponent from './DashboardComponent.svelte';
 	import type { PanelConfiguration } from '$lib/types';
-	import LineChart from '../visualization/LineChart.svelte';
+	import LineChart from '../dashboard/LineChart.svelte';
 	export let configuration: PanelConfiguration;
 
 	const addComponent = () => {
