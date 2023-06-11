@@ -22,7 +22,12 @@
 				{
 					data: [150, 230, 224, 218, 135, 147, 260],
 					type: 'line',
-					smooth: true
+					smooth: true,
+					markLine: {
+						data: [{ type: 'average', name: 'Average', symbol: 'none', label: 'bruh' }],
+						symbol: 'none',
+						silent: true
+					}
 				}
 			],
 			dataZoom: [

@@ -64,7 +64,12 @@
 					name: 'Fake Data',
 					type: 'line',
 					showSymbol: false,
-					data: data
+					data: data,
+					markLine: {
+						data: [{ type: 'average', name: 'Average', symbol: 'none', label: 'bruh' }],
+						symbol: 'none',
+						silent: true
+					}
 				}
 			]
 		};
