@@ -41,12 +41,12 @@
 
 ** Week 3, 06/05/2023 - 06/11/2023
 *** Goals
-    - [ ] Prototype frontend structure. I expect this goal (and the one below it) to continue in
+    - [X] Prototype frontend structure. I expect this goal (and the one below it) to continue in
       future weeks.
-    - [ ] Prototype backend structure.
+    - [X] Prototype backend structure.
     - [ ] Identify hardware sensors for demo System Under Test.
 *** Demos
-    - [ ] A sort of "Hello World" demo between the frontend and the backend, showing that they can
+    - [X] A sort of "Hello World" demo between the frontend and the backend, showing that they can
       communicate with each other.
 
 ** Week 4, 06/12/2023 - 06/18/2023
