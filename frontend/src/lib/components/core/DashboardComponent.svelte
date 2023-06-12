@@ -29,7 +29,7 @@
 			</button>
 		{/if}
 		<button on:click={toggle}>
-			<Icon name={expanded === 'component' ? 'minus' : 'plus'} />
+			<Icon name={expanded === 'component' ? 'chevron-up' : 'chevron-down'} />
 		</button>
 	</div>
 	{#if expanded === 'component'}
