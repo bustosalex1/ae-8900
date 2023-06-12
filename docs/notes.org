@@ -57,7 +57,7 @@
 
    I also flashed the Raspberry Pi SD card with Raspberry Pi OS Lite.
 
-** Week 3 6/5/2023 - 6/11/2023
+** Week 3, 6/5/2023 - 6/11/2023
 *** Meeting with Dr. Gunter
     This week I met with Dr. Gunter to discuss the state of my project so far. We met on 6/08/2023.
     Some meeting notes are below:
@@ -79,3 +79,31 @@
     the point where I am able to stream random data from the backend to the frontend over a
     WebSocket, and have a line chart update in real time with data from the backend.
 
+** Week 4, 6/12/2023 - 6/18/2023
+*** 6/12/2023 Notes
+    Last week was pretty solid in terms of getting a lot of stuff scaffolded and prototyped, and I
+    would like to keep that up this week. Here are some priorities I would like to focus on.
+**** TODO Complete Dynamic Component Rendering Scheme
+     Last week I worked out the general scheme by which components can be dynamically rendered, and
+     also worked out how I can automatically generate a string to component mapping of all the
+     dashboard components that can be rendered. I would like to use this map to make it so that a
+     user can select the type of new component they want when pressing the "+" button on a column on
+     the frontend.
+**** TODO Complete Basic Settings Panel
+     I started working on a generic chart settings panel that can be accessed on any chart component
+     when you click the edit button on the top right of an expanded chart component. Right now this
+     doesn't do anything and doesn't include really substantial settings. I would like to build this
+     out so that:
+     a. changes made on the settings panel are actually stored in the project state and propagate
+     through to the corresponding dashboard component
+     b. the available settings are actually applicable to the component they are on
+**** TODO Start Building Out WebSocket Receiver
+     Last week I did some very basic stuff with streaming data via a WebSocket from the backend to
+     the frontend. I think that this scheme will work well for providing data to the various graphs
+     on the frontend, and I would like to accomplish this using Svelte stores that are managed by a
+     sort of connection manager entity that basically sorts incoming data into different stores that
+     different graphs can subscribe / unsubscribe to.
+**** TODO Try out OpenAPI Generation Tools
+     It seems like I should be able to use some of the OpenAPI generation tools out there to
+     automatically make some API stubs for the frontend for the backend API. I would like to try
+     this out and investigate its feasibility.

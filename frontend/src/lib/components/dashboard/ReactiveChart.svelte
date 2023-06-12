@@ -17,7 +17,7 @@
 			const message = JSON.parse(event.data);
 			const timestamp = new Date(message.timestamp * 1000);
 			const newData = [timestamp, message.data];
-			if (data.length > 200) {
+			if (data.length > 2000) {
 				data.shift();
 			}
 			data.push(newData);
@@ -56,6 +56,14 @@
 					type: 'line',
 					showSymbol: false,
 					data: data
+				}
+			],
+			dataZoom: [
+				{
+					id: 'dataZoomX',
+					type: 'slider',
+					xAxisIndex: 0,
+					filterMode: 'filter'
 				}
 			]
 		};
