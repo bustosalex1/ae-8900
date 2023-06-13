@@ -38,7 +38,6 @@
 				splitLine: {
 					show: false
 				},
-				min: new Date(Date.now() - 1000 * 60 * 1),
 				name: 'Time'
 			},
 			yAxis: {
@@ -62,8 +61,14 @@
 				{
 					id: 'dataZoomX',
 					type: 'slider',
+					realtime: true,
+					startValue: new Date(Date.now() - 1000 * 60 * 1),
+					endValue: new Date(Date.now()),
+					start: 0,
+					end: 100,
 					xAxisIndex: 0,
-					filterMode: 'filter'
+					showDataShadow: false,
+					filterMode: 'empty'
 				}
 			]
 		};
