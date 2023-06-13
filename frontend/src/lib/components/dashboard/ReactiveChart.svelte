@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as echarts from 'echarts';
-	import { onMount } from 'svelte/internal';
+	import { onMount, onDestroy } from 'svelte/internal';
 	export const key = 'ReactiveChart';
 
 	let chartDOM: HTMLElement;
@@ -8,10 +8,10 @@
 	let myChart: echarts.ECharts;
 	let w: number;
 	let h: number;
-
+	let ws: WebSocket;
 	let data: any[] = [];
 	onMount(() => {
-		let ws = new WebSocket('ws://localhost:8000/ws');
+		ws = new WebSocket('ws://localhost:8000/ws');
 
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
@@ -69,6 +69,10 @@
 		};
 
 		myChart.setOption(option);
+	});
+
+	onDestroy(() => {
+		ws.close();
 	});
 
 	$: myChart && myChart.resize({ width: w, height: h });

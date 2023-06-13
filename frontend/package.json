@@ -22,6 +22,7 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.26.0",
+		"openapi-typescript": "^6.2.7",
 		"postcss": "^8.4.24",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
@@ -37,6 +38,7 @@
 	"type": "module",
 	"dependencies": {
 		"echarts": "^5.4.2",
+		"openapi-fetch": "^0.2.1",
 		"sass": "^1.63.2",
 		"svelte-splitpanes": "^0.7.14",
 		"theme-change": "^2.5.0"
