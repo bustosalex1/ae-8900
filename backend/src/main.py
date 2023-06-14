@@ -3,10 +3,11 @@ import random
 from datetime import datetime
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-
+from src.routers import crud
 from pydantic import BaseModel
 
 app = FastAPI()
+app.include_router(crud.router)
 
 origins = [
     "http://localhost:5173",
@@ -31,11 +32,6 @@ class WebsocketMessage(BaseModel):
 @app.get("/")
 async def root() -> WebsocketMessage:
     return WebsocketMessage(message="this is my ae-8900 backend!")
-
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
 
 
 @app.websocket("/ws")

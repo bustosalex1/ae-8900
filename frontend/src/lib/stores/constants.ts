@@ -9,4 +9,4 @@ export const themes = {
 }
 
 // insane that this works
-export const dashboardMap = Object.entries(dashboard)
+export const dashboardMap = Object.fromEntries(Object.entries(dashboard))

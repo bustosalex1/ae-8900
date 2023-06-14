@@ -4,7 +4,8 @@ start-frontend:
 
 # start the backend development server
 start-backend:
-    cd backend/src && uvicorn main:app --reload
+    set PYTHONPATH $(pwd)
+    cd backend && uvicorn src.main:app --reload
 
 # generate typescript API from FastAPI backend. Make sure the backend is running!
 generate-api:

@@ -1,7 +1,0 @@
-title: 'Demo Project'
-vertical: true
-panels:
-    - title: 'Data Panel'
-      components:
-          - title: 'System Status'
-            component: 'ReactiveChart'
