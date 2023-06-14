@@ -1,0 +1,7 @@
+panels:
+- components:
+  - component: string
+    title: string
+  title: string
+title: string
+vertical: true
