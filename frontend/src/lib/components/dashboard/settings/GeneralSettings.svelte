@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ComponentConfiguration } from '$lib/types';
+	import type { ComponentConfiguration } from '$lib/api';
 	export let componentConfiguration: ComponentConfiguration;
 </script>
 
@@ -15,4 +15,3 @@
 		</label>
 	</div>
 </div>
-

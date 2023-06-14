@@ -2,7 +2,7 @@
 	import Icon from '$lib/components/general/Icon.svelte';
 	import { fly } from 'svelte/transition';
 	import DashboardComponent from './DashboardComponent.svelte';
-	import type { PanelConfiguration } from '$lib/types';
+	import type { PanelConfiguration } from '$lib/api';
 	import Modal from './Modal.svelte';
 	import { dashboardMap } from '$lib/stores';
 	export let configuration: PanelConfiguration;
@@ -15,8 +15,7 @@
 			...configuration.components,
 			{
 				title: 'New Component',
-				component: dashboardMap[newComponent],
-				props: {}
+				component: newComponent
 			}
 		];
 	};
@@ -32,7 +31,7 @@
 	{#each configuration.components as componentConfiguration}
 		<div transition:fly={{ y: -10, duration: 350 }}>
 			<DashboardComponent {componentConfiguration}>
-				<svelte:component this={componentConfiguration.component} />
+				<svelte:component this={dashboardMap[componentConfiguration.component]} />
 			</DashboardComponent>
 		</div>
 	{/each}

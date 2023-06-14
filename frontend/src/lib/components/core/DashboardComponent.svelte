@@ -2,7 +2,7 @@
 	import { fly, slide } from 'svelte/transition';
 	import Icon from '../general/Icon.svelte';
 	import GeneralSettings from '../dashboard/settings/GeneralSettings.svelte';
-	import type { ComponentConfiguration } from '$lib/types';
+	import type { ComponentConfiguration } from '$lib/api';
 
 	// props
 	export let componentConfiguration: ComponentConfiguration;
