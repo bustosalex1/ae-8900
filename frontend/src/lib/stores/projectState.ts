@@ -4,6 +4,7 @@ import type { ProjectConfiguration } from '$lib/api'
 const createProjectState = () => {
     const defaultState: ProjectConfiguration = {
         title: 'Project State',
+        description: '',
         vertical: true,
         panels: [
             {
