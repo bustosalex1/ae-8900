@@ -4,55 +4,55 @@
 
 /* insane custom stuff necessary to style svelte-splitpanes */
 .splitpanes.custom-theme .splitpanes__pane {
-	@apply bg-base-100;
+    @apply bg-base-100;
 }
 
 .splitpanes.custom-theme .splitpanes__splitter {
-	@apply bg-base-200 flex-shrink-0 relative hover:bg-primary transition-all duration-300;
-	/* box-sizing: border-box; */
+    @apply bg-base-200 flex-shrink-0 relative hover:bg-primary transition-all duration-300;
+    /* box-sizing: border-box; */
 }
 
 .splitpanes.custom-theme .splitpanes__splitter:first-child {
-	cursor: auto;
+    cursor: auto;
 }
 
 .custom-theme.splitpanes .splitpanes .splitpanes__splitter {
-	z-index: 1;
+    z-index: 1;
 }
 .custom-theme.splitpanes--vertical > .splitpanes__splitter,
 .custom-theme .splitpanes--vertical > .splitpanes__splitter {
-	width: 3px;
-	cursor: col-resize;
+    width: 3px;
+    cursor: col-resize;
 }
 
 .custom-theme.splitpanes--vertical > .splitpanes__splitter:before,
 .custom-theme .splitpanes--vertical > .splitpanes__splitter:before {
-	margin-left: -2px;
+    margin-left: -2px;
 }
 .custom-theme.splitpanes--vertical > .splitpanes__splitter:after,
 .custom-theme .splitpanes--vertical > .splitpanes__splitter:after {
-	margin-left: 1px;
+    margin-left: 1px;
 }
 .custom-theme.splitpanes--horizontal > .splitpanes__splitter,
 .custom-theme .splitpanes--horizontal > .splitpanes__splitter {
-	height: 3px;
-	cursor: row-resize;
+    height: 3px;
+    cursor: row-resize;
 }
 .custom-theme.splitpanes--horizontal > .splitpanes__splitter:before,
 .custom-theme .splitpanes--horizontal > .splitpanes__splitter:before {
-	margin-top: -2px;
+    margin-top: -2px;
 }
 .custom-theme.splitpanes--horizontal > .splitpanes__splitter:after,
 .custom-theme .splitpanes--horizontal > .splitpanes__splitter:after {
-	margin-top: 1px;
+    margin-top: 1px;
 }
 
 .feather {
-	@apply stroke-base-content;
-	width: 20px;
-	height: 20px;
-	stroke-width: 2;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	fill: none;
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
 }

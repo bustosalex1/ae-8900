@@ -4,8 +4,8 @@
 import * as dashboard from '$lib/components/dashboard'
 
 export const themes = {
-	light: 'bumblebee',
-	dark: 'dracula'
+    light: 'bumblebee',
+    dark: 'dracula'
 }
 
 // insane that this works

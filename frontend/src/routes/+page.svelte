@@ -1,53 +1,43 @@
 <script lang="ts">
-	import Icon from '$lib/components/general/Icon.svelte';
-	import { get, type ProjectConfiguration, apiCall } from '$lib/api';
-	import { onMount } from 'svelte';
-	import { projectState } from '$lib/stores';
+    import Icon from '$lib/components/general/Icon.svelte'
+    import { get, type ProjectConfiguration, apiCall } from '$lib/api'
+    import { onMount } from 'svelte'
+    import ProjectCard from '$lib/components/general/ProjectCard.svelte'
+    import { projectState } from '$lib/stores'
 
-	let projects: ProjectConfiguration[] = [];
+    let projects: ProjectConfiguration[] | undefined = undefined
 
-	onMount(async () => {
-		const data = await apiCall(() => get('/projects/', {}));
-
-		if (data?.data) {
-			projects = data.data;
-		} else {
-		}
-	});
-
-	const setProject = (configuration: ProjectConfiguration) => {
-		projectState.set(configuration);
-	};
+    onMount(async () => {
+        projects = await apiCall(get('/projects/', {}))
+    })
 </script>
 
-<div class="w-full flex justify-center items-center p-10">
-	{#each projects as project}
-		<div
-			class="transition ease-in-out card w-full bg-base-100 shadow-xl hover:shadow-2xl hover:-translate-y-1 duration-300 ring-1 ring-neutral-400 h-full group"
-		>
-			<div class="p-3 card-body">
-				<h2
-					class="leading-tight text-md font-bold group-hover:text-primary transition ease-in-out duration-300"
-				>
-					{project.title}
-				</h2>
-				<p class="text-sm">{project.title}</p>
-				<div class="card-actions justify-end">
-					<a
-						href="/project"
-						class="btn w-full"
-						on:click={() => {
-							projectState.set(project);
-						}}>Open</a
-					>
-				</div>
-			</div>
-		</div>
-	{/each}
-	<div>
-		<Icon class="feather mx-auto" name="coffee" />
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 items-center p-4">
+    {#if projects}
+        {#each projects as project}
+            <ProjectCard {project} />
+        {/each}
+    {/if}
 
-		<p class="p-2">I'm working on multiple project support. For now,</p>
-		<a href="/project" class="btn w-full">Open Demo</a>
-	</div>
+    <div
+        class="flex flex-col items-center w-full h-full border border-1 border-dashed rounded-2xl justify-center"
+    >
+        <a
+            href="/project"
+            class="btn btn-circle btn-outline"
+            on:click={() => {
+                projectState.set({
+                    title: 'New Project',
+                    vertical: false,
+                    panels: [
+                        {
+                            title: 'New Panel',
+                            components: []
+                        }
+                    ]
+                })
+            }}><Icon name="plus" /></a
+        >
+        <p class="text-lg font-bold">Create New Project</p>
+    </div>
 </div>

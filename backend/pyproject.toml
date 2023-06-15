@@ -1,0 +1,4 @@
+[tool.ruff]
+select = ["D"]
+ignore = ["D212", "D203"]
+line-length = 200

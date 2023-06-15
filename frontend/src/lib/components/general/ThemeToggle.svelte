@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { themeChange } from 'theme-change';
-	import { themes } from '$lib/stores';
-	import Icon from './Icon.svelte';
+    import { onMount } from 'svelte'
+    import { themeChange } from 'theme-change'
+    import { themes } from '$lib/stores'
+    import Icon from './Icon.svelte'
 
-	onMount(() => {
-		themeChange(false);
-	});
+    onMount(() => {
+        themeChange(false)
+    })
 </script>
 
 <!--@component
@@ -19,16 +19,16 @@ used like:
 -->
 
 <label class="swap swap-rotate">
-	<!-- this hidden checkbox controls the state -->
-	<input
-		type="checkbox"
-		data-toggle-theme={`${themes.dark},${themes.light}`}
-		data-active-class="ACTIVECLASS"
-	/>
+    <!-- this hidden checkbox controls the state -->
+    <input
+        type="checkbox"
+        data-toggle-theme={`${themes.dark},${themes.light}`}
+        data-active-class="ACTIVECLASS"
+    />
 
-	<!-- sun icon -->
-	<Icon name="sun" class="feather swap-on fill-current" />
+    <!-- sun icon -->
+    <Icon name="sun" class="feather swap-on fill-current" />
 
-	<!-- moon icon -->
-	<Icon name="moon" class="feather swap-off fill-current" />
+    <!-- moon icon -->
+    <Icon name="moon" class="feather swap-off fill-current" />
 </label>

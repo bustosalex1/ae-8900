@@ -4,7 +4,7 @@ import yaml
 import glob
 from fastapi import APIRouter
 from src.models import core
-from src.management import project_management
+from src.management import project_management, utils
 
 router = APIRouter()
 
@@ -33,15 +33,23 @@ async def get_projects() -> List[core.ProjectConfiguration]:
 
 
 @router.post("/project/")
-async def create_project(configuration: core.ProjectConfiguration) -> core.ProjectConfiguration:
+async def create_project(configuration: core.ProjectConfiguration | None = None) -> core.ProjectConfiguration:
     """
     Scaffold a new project in PROJECTS_DIR with a configuration file and some folders.
 
     :param configuration: the configuration of the new project to create.
     :return: the configuration of the new project that was created.
     """
+    # allow for making zero-configuration projects
+    if configuration is None:
+        configuration = core.ProjectConfiguration(
+            title="New Project",
+            vertical=False,
+            panels=[],
+        )
+
     # make the folder structure associated with the project
-    project_directory = project_management.PROJECTS_DIR / configuration.title
+    project_directory = project_management.PROJECTS_DIR / utils.safe_string(configuration.title)
 
     project_template = [
         project_directory,

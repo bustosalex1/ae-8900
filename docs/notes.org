@@ -103,7 +103,8 @@
      on the frontend, and I would like to accomplish this using Svelte stores that are managed by a
      sort of connection manager entity that basically sorts incoming data into different stores that
      different graphs can subscribe / unsubscribe to.
-**** TODO Try out OpenAPI Generation Tools
+**** DONE Try out OpenAPI Generation Tools
+     CLOSED: [2023-06-14 Wed 19:26]
      It seems like I should be able to use some of the OpenAPI generation tools out there to
      automatically make some API stubs for the frontend for the backend API. I would like to try
      this out and investigate its feasibility.

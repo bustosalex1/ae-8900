@@ -3,140 +3,138 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
-  "/projects/": {
+    '/projects/': {
+        /**
+         * Get Projects
+         * @description Return the configurations for all projects in the PROJECTS_DIR directory.
+         */
+        get: operations['get_projects_projects__get']
+    }
+    '/project/': {
+        /**
+         * Create Project
+         * @description Scaffold a new project in PROJECTS_DIR with a configuration file and some folders.
+         *
+         * :param configuration: the configuration of the new project to create.
+         * :return: the configuration of the new project that was created.
+         */
+        post: operations['create_project_project__post']
+    }
+    '/': {
+        /** Root */
+        get: operations['root__get']
+    }
+}
+
+export type webhooks = Record<string, never>
+
+export interface components {
+    schemas: {
+        /** ComponentConfiguration */
+        ComponentConfiguration: {
+            /** Title */
+            title: string
+            /** Component */
+            component: string
+        }
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components['schemas']['ValidationError'][]
+        }
+        /** PanelConfiguration */
+        PanelConfiguration: {
+            /** Title */
+            title: string
+            /** Components */
+            components: components['schemas']['ComponentConfiguration'][]
+        }
+        /** ProjectConfiguration */
+        ProjectConfiguration: {
+            /** Title */
+            title: string
+            /** Panels */
+            panels: components['schemas']['PanelConfiguration'][]
+            /** Vertical */
+            vertical: boolean
+        }
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[]
+            /** Message */
+            msg: string
+            /** Error Type */
+            type: string
+        }
+        /** WebsocketMessage */
+        WebsocketMessage: {
+            /** Message */
+            message: string
+        }
+    }
+    responses: never
+    parameters: never
+    requestBodies: never
+    headers: never
+    pathItems: never
+}
+
+export type external = Record<string, never>
+
+export interface operations {
     /**
-     * Get Projects 
+     * Get Projects
      * @description Return the configurations for all projects in the PROJECTS_DIR directory.
      */
-    get: operations["get_projects_projects__get"];
-  };
-  "/project/": {
+    get_projects_projects__get: {
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': components['schemas']['ProjectConfiguration'][]
+                }
+            }
+        }
+    }
     /**
-     * Create Project 
+     * Create Project
      * @description Scaffold a new project in PROJECTS_DIR with a configuration file and some folders.
-     * 
+     *
      * :param configuration: the configuration of the new project to create.
      * :return: the configuration of the new project that was created.
      */
-    post: operations["create_project_project__post"];
-  };
-  "/": {
+    create_project_project__post: {
+        requestBody?: {
+            content: {
+                'application/json': components['schemas']['ProjectConfiguration']
+            }
+        }
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': components['schemas']['ProjectConfiguration']
+                }
+            }
+            /** @description Validation Error */
+            422: {
+                content: {
+                    'application/json': components['schemas']['HTTPValidationError']
+                }
+            }
+        }
+    }
     /** Root */
-    get: operations["root__get"];
-  };
-}
-
-export type webhooks = Record<string, never>;
-
-export interface components {
-  schemas: {
-    /** ComponentConfiguration */
-    ComponentConfiguration: {
-      /** Title */
-      title: string;
-      /** Component */
-      component: string;
-    };
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: (components["schemas"]["ValidationError"])[];
-    };
-    /** PanelConfiguration */
-    PanelConfiguration: {
-      /** Title */
-      title: string;
-      /** Components */
-      components: (components["schemas"]["ComponentConfiguration"])[];
-    };
-    /** ProjectConfiguration */
-    ProjectConfiguration: {
-      /** Title */
-      title: string;
-      /** Panels */
-      panels: (components["schemas"]["PanelConfiguration"])[];
-      /** Vertical */
-      vertical: boolean;
-    };
-    /** ValidationError */
-    ValidationError: {
-      /** Location */
-      loc: (string | number)[];
-      /** Message */
-      msg: string;
-      /** Error Type */
-      type: string;
-    };
-    /** WebsocketMessage */
-    WebsocketMessage: {
-      /** Message */
-      message: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
-}
-
-export type external = Record<string, never>;
-
-export interface operations {
-
-  /**
-   * Get Projects 
-   * @description Return the configurations for all projects in the PROJECTS_DIR directory.
-   */
-  get_projects_projects__get: {
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": (components["schemas"]["ProjectConfiguration"])[];
-        };
-      };
-    };
-  };
-  /**
-   * Create Project 
-   * @description Scaffold a new project in PROJECTS_DIR with a configuration file and some folders.
-   * 
-   * :param configuration: the configuration of the new project to create.
-   * :return: the configuration of the new project that was created.
-   */
-  create_project_project__post: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ProjectConfiguration"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ProjectConfiguration"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /** Root */
-  root__get: {
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["WebsocketMessage"];
-        };
-      };
-    };
-  };
+    root__get: {
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': components['schemas']['WebsocketMessage']
+                }
+            }
+        }
+    }
 }

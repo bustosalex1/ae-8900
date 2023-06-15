@@ -1,10 +1,10 @@
+"""Entrypoint into AE-9000 backend."""
 import asyncio
 import random
 from datetime import datetime
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from src.routers import crud
-from pydantic import BaseModel
 
 app = FastAPI()
 app.include_router(crud.router)
@@ -25,17 +25,9 @@ app.add_middleware(
 )
 
 
-class WebsocketMessage(BaseModel):
-    message: str
-
-
-@app.get("/")
-async def root() -> WebsocketMessage:
-    return WebsocketMessage(message="this is my ae-8900 backend!")
-
-
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    """Just an endpoint to test out websocket connections."""
     await websocket.accept()
 
     while True:
