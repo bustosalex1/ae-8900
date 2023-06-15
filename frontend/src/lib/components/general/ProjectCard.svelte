@@ -29,9 +29,7 @@
                 {project.title}
             </h2>
             <p class="text-sm">{project.description}</p>
-            <div class="card-actions justify-end">
-                Date goes here.
-            </div>
+            <div class="card-actions justify-end">Date goes here.</div>
         </div>
     </div>
 </a>
