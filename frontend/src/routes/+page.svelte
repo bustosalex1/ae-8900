@@ -20,7 +20,7 @@
     {/if}
 
     <div
-        class="flex flex-col items-center w-full h-full border border-1 border-dashed rounded-2xl justify-center"
+        class="flex flex-col items-center w-full h-full border border-1 border-dashed rounded-2xl justify-center py-20"
     >
         <a
             href="/project"
