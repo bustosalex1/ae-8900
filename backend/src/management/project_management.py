@@ -22,8 +22,4 @@ def load_project(filepath: Path) -> core.ProjectConfiguration:
         data = yaml.safe_load(file)
 
     # return a ProjectConfiguration instance
-    return core.ProjectConfiguration(
-        title=data["title"],
-        vertical=data["vertical"],
-        panels=data["panels"],
-    )
+    return core.ProjectConfiguration(**data)

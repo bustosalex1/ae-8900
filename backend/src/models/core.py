@@ -1,5 +1,5 @@
 """Main Pydantic models for my AE-8900 Backend."""
-from typing import List, Any
+from typing import List
 from pydantic import BaseModel
 
 
@@ -25,5 +25,6 @@ class ProjectConfiguration(BaseModel):
     """
 
     title: str
+    description: str
     panels: List[PanelConfiguration]
     vertical: bool
