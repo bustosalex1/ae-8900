@@ -7,6 +7,13 @@
 
     const settings: Setting[] = [
         {
+            icon: 'settings',
+            label: 'Project Settings',
+            callback: () => {
+                console.log('nothing')
+            }
+        },
+        {
             icon: 'save',
             label: 'Save Changes',
             callback: applyProjectChanges

@@ -1,6 +1,7 @@
 """Create, Read, Update, Delete (CRUD) endpoints for my AE 8900 backend API."""
 from typing import List
 import os
+import shutil
 import yaml
 import glob
 from fastapi import APIRouter, HTTPException
@@ -97,3 +98,9 @@ async def update_project(state: core.ProjectState) -> core.ProjectState:
 
     updated_project = project_management.load_project(filepath)
     return updated_project
+
+
+@router.delete("/project/")
+async def delete_project(state: core.ProjectState) -> core.ProjectState:
+    """Delete a project and all of its associated files."""
+    shutil.rmtree(Path(state.metadata.filepath).parent)
