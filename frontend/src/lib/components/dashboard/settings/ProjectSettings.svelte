@@ -4,13 +4,19 @@
     import { applyProjectChanges, revertProjectChanges } from '$lib/stores'
     import { stagedState } from '$lib/stores'
     import type { Setting } from '$lib/types'
+    import { goto } from '$app/navigation'
+    import { page } from '$app/stores'
 
     const settings: Setting[] = [
         {
             icon: 'settings',
             label: 'Project Settings',
-            callback: () => {
-                console.log('nothing')
+            callback: async () => {
+                if ($page.route?.id === '/project') {
+                    await goto('/project/settings')
+                } else {
+                    await goto('/project')
+                }
             }
         },
         {

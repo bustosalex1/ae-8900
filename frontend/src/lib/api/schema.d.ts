@@ -28,6 +28,11 @@ export interface paths {
          * :return: the configuration of the new project that was created.
          */
         post: operations['create_project_project__post']
+        /**
+         * Delete Project
+         * @description Delete a project and all of its associated files.
+         */
+        delete: operations['delete_project_project__delete']
     }
 }
 
@@ -44,6 +49,8 @@ export interface components {
             title: string
             /** Component */
             component: string
+            /** Expanded */
+            expanded: boolean
         }
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -167,6 +174,31 @@ export interface operations {
      * :return: the configuration of the new project that was created.
      */
     create_project_project__post: {
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['ProjectState']
+            }
+        }
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': components['schemas']['ProjectState']
+                }
+            }
+            /** @description Validation Error */
+            422: {
+                content: {
+                    'application/json': components['schemas']['HTTPValidationError']
+                }
+            }
+        }
+    }
+    /**
+     * Delete Project
+     * @description Delete a project and all of its associated files.
+     */
+    delete_project_project__delete: {
         requestBody: {
             content: {
                 'application/json': components['schemas']['ProjectState']

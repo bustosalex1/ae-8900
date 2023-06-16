@@ -15,7 +15,8 @@
             ...configuration.components,
             {
                 title: 'New Component',
-                component: newComponent
+                component: newComponent,
+                expanded: false
             }
         ]
     }
@@ -29,7 +30,7 @@
 </div>
 <div class="flex flex-col gap-2 h-screen overflow-y-scroll overflow-x-hidden p-2 pb-20">
     {#each configuration.components as componentConfiguration}
-        <div transition:fly={{ y: -10, duration: 350 }}>
+        <div in:fly={{ y: -10, duration: 350 }}>
             <DashboardComponent {componentConfiguration}>
                 <svelte:component this={dashboardMap[componentConfiguration.component]} />
             </DashboardComponent>

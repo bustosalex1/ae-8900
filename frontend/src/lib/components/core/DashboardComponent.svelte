@@ -8,20 +8,12 @@
     export let componentConfiguration: ComponentConfiguration
 
     // component state
-    let expanded: 'component' | 'settings' | 'none' = 'none'
-
-    // callback to expand the dashboard component, or show settings
-    const setExpanded = (value: 'component' | 'settings' | 'none') => {
-        expanded = value
-    }
+    let settings = false
 
     // callback to toggle expanded state
     const toggle = () => {
-        if (expanded === 'component' || expanded === 'settings') {
-            expanded = 'none'
-        } else {
-            expanded = 'component'
-        }
+        componentConfiguration.expanded = !componentConfiguration.expanded
+        settings = false
     }
 </script>
 
@@ -35,25 +27,25 @@
                 on:click|stopPropagation
             />
         </button>
-        {#if expanded !== 'none'}
+        {#if componentConfiguration.expanded}
             <div class="tooltip tooltip-left tooltip-primary z-50" data-tip="Edit">
                 <button
                     transition:fly={{ x: 10, duration: 500 }}
-                    on:click={() => setExpanded('settings')}
+                    on:click={() => (settings = !settings)}
                 >
                     <Icon name="edit" class="feather" />
                 </button>
             </div>
         {/if}
         <button on:click={toggle}>
-            <Icon name={expanded === 'component' ? 'chevron-up' : 'chevron-down'} />
+            <Icon name={componentConfiguration.expanded ? 'chevron-up' : 'chevron-down'} />
         </button>
     </div>
-    {#if expanded === 'component'}
+    {#if componentConfiguration.expanded && !settings}
         <div transition:slide={{ duration: 500 }}>
             <slot />
         </div>
-    {:else if expanded === 'settings'}
+    {:else if settings}
         <div>
             <GeneralSettings bind:componentConfiguration />
         </div>

@@ -9,6 +9,7 @@ class ComponentConfiguration(BaseModel):
 
     title: str
     component: str
+    expanded: bool
 
 
 class PanelConfiguration(BaseModel):

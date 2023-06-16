@@ -30,7 +30,7 @@
                     configuration: {
                         title: 'New Project',
                         description: 'A new project.',
-                        vertical: false,
+                        vertical: true,
                         panels: [
                             {
                                 title: 'New Panel',

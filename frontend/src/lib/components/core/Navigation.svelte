@@ -14,7 +14,7 @@
             <Icon name="zap" class="feather mr-1" />
         </a>
         <div class="text-xl font-bold">Alex's AE 8900 Project</div>
-        {#if $page.route?.id === '/project'}
+        {#if $page.route?.id && $page.route.id.includes('project')}
             <div class="divider divider-horizontal mx-1" />
             <input
                 type="text"
@@ -25,7 +25,7 @@
         {/if}
     </div>
 
-    {#if $page.route?.id === '/project'}
+    {#if $page.route?.id && $page.route.id.includes('project')}
         <ProjectSettings />
     {/if}
     <div class="flex-none">
