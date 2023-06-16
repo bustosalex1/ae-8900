@@ -17,7 +17,7 @@ lint-backend:
 
 # lint the frontend with... eslint I guess?
 lint-frontend:
-    cd frontend && pnpm lint
+    -cd frontend && pnpm lint
 
 # see if any new packages have been added to the env that are not in requirements.txt
 backend-dependency-diff:

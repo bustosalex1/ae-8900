@@ -7,11 +7,19 @@ export interface paths {
     '/projects/': {
         /**
          * Get Projects
-         * @description Return the configurations for all projects in the PROJECTS_DIR directory.
+         * @description Return the ProjectState for all projects in the PROJECTS_DIR directory.
          */
         get: operations['get_projects_projects__get']
     }
     '/project/': {
+        /**
+         * Update Project
+         * @description Update a project's config.yaml.
+         *
+         * :param state: the updated project state.
+         * :return: the updated project information.
+         */
+        put: operations['update_project_project__put']
         /**
          * Create Project
          * @description Scaffold a new project in PROJECTS_DIR with a configuration file and some folders.
@@ -68,6 +76,27 @@ export interface components {
             /** Vertical */
             vertical: boolean
         }
+        /**
+         * ProjectMetadata
+         * @description Contains relevant information about a project, such as its folder location, that is not managed by the user.
+         */
+        ProjectMetadata: {
+            /** Filepath */
+            filepath: string
+            /**
+             * Last Modified
+             * Format: date-time
+             */
+            last_modified: string
+        }
+        /**
+         * ProjectState
+         * @description Defines the state of a project, which is composed of its configuration, and its metadata.
+         */
+        ProjectState: {
+            configuration: components['schemas']['ProjectConfiguration']
+            metadata?: components['schemas']['ProjectMetadata']
+        }
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -90,14 +119,42 @@ export type external = Record<string, never>
 export interface operations {
     /**
      * Get Projects
-     * @description Return the configurations for all projects in the PROJECTS_DIR directory.
+     * @description Return the ProjectState for all projects in the PROJECTS_DIR directory.
      */
     get_projects_projects__get: {
         responses: {
             /** @description Successful Response */
             200: {
                 content: {
-                    'application/json': components['schemas']['ProjectConfiguration'][]
+                    'application/json': components['schemas']['ProjectState'][]
+                }
+            }
+        }
+    }
+    /**
+     * Update Project
+     * @description Update a project's config.yaml.
+     *
+     * :param state: the updated project state.
+     * :return: the updated project information.
+     */
+    update_project_project__put: {
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['ProjectState']
+            }
+        }
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': components['schemas']['ProjectState']
+                }
+            }
+            /** @description Validation Error */
+            422: {
+                content: {
+                    'application/json': components['schemas']['HTTPValidationError']
                 }
             }
         }
@@ -112,14 +169,14 @@ export interface operations {
     create_project_project__post: {
         requestBody: {
             content: {
-                'application/json': components['schemas']['ProjectConfiguration']
+                'application/json': components['schemas']['ProjectState']
             }
         }
         responses: {
             /** @description Successful Response */
             200: {
                 content: {
-                    'application/json': components['schemas']['ProjectConfiguration']
+                    'application/json': components['schemas']['ProjectState']
                 }
             }
             /** @description Validation Error */

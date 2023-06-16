@@ -1,6 +1,6 @@
 import createClient from 'openapi-fetch'
 import type { paths, components } from './schema'
-export const { get, post } = createClient<paths>({ baseUrl: 'http://localhost:8000' })
+export const { get, post, put } = createClient<paths>({ baseUrl: 'http://localhost:8000' })
 
 export const apiCall = async <T>(
     apiFunction: Promise<{ data?: T; error?: any; response?: Response }>
@@ -24,5 +24,7 @@ export const apiCall = async <T>(
 }
 /** types that are important enough to create aliases for */
 export type ProjectConfiguration = components['schemas']['ProjectConfiguration']
+export type ProjectMetadata = components['schemas']['ProjectMetadata']
 export type ComponentConfiguration = components['schemas']['ComponentConfiguration']
 export type PanelConfiguration = components['schemas']['PanelConfiguration']
+export type ProjectState = components['schemas']['ProjectState']

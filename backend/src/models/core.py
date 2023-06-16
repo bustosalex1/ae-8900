@@ -1,5 +1,6 @@
 """Main Pydantic models for my AE-8900 Backend."""
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -28,3 +29,17 @@ class ProjectConfiguration(BaseModel):
     description: str
     panels: List[PanelConfiguration]
     vertical: bool
+
+
+class ProjectMetadata(BaseModel):
+    """Contains relevant information about a project, such as its folder location, that is not managed by the user."""
+
+    filepath: str
+    last_modified: datetime
+
+
+class ProjectState(BaseModel):
+    """Defines the state of a project, which is composed of its configuration, and its metadata."""
+
+    configuration: ProjectConfiguration
+    metadata: Optional[ProjectMetadata]

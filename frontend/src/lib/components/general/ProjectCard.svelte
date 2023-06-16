@@ -1,15 +1,16 @@
 <script lang="ts">
-    import type { ProjectConfiguration } from '$lib/api'
-    import { projectState } from '$lib/stores'
+    import type { ProjectState } from '$lib/api'
+    import { setActiveProject } from '$lib/stores'
+    import FormattedDate from './FormattedDate.svelte'
     import Icon from './Icon.svelte'
 
-    export let project: ProjectConfiguration
+    export let state: ProjectState
 </script>
 
 <a
     href="/project"
     on:click={() => {
-        projectState.set(project)
+        setActiveProject(state)
     }}
 >
     <div
@@ -26,10 +27,17 @@
             <h2
                 class="leading-tight text-md font-bold group-hover:text-primary transition ease-in-out duration-300"
             >
-                {project.title}
+                {state.configuration.title}
             </h2>
-            <p class="text-sm">{project.description}</p>
-            <div class="card-actions justify-end">Date goes here.</div>
+            <p class="text-sm">{state.configuration.description}</p>
+            <div class="card-actions justify-end">
+                {#if state.metadata}
+                    <FormattedDate
+                        date={new Date(state.metadata.last_modified)}
+                        prefix="Modified"
+                    />
+                {/if}
+            </div>
         </div>
     </div>
 </a>

@@ -1,21 +1,21 @@
 <script lang="ts">
     import Icon from '$lib/components/general/Icon.svelte'
-    import { get, type ProjectConfiguration, apiCall } from '$lib/api'
+    import { get, apiCall, type ProjectState } from '$lib/api'
     import { onMount } from 'svelte'
     import ProjectCard from '$lib/components/general/ProjectCard.svelte'
-    import { projectState } from '$lib/stores'
+    import { projectState, revertProjectChanges } from '$lib/stores'
 
-    let projects: ProjectConfiguration[] | undefined = undefined
+    let projects: ProjectState[] | undefined = undefined
 
     onMount(async () => {
         projects = await apiCall(get('/projects/', {}))
     })
 </script>
 
-<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 items-center p-4">
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 p-4">
     {#if projects}
-        {#each projects as project}
-            <ProjectCard {project} />
+        {#each projects as state}
+            <ProjectCard {state} />
         {/each}
     {/if}
 
@@ -27,15 +27,20 @@
             class="btn btn-circle btn-outline"
             on:click={() => {
                 projectState.set({
-                    title: 'New Project',
-                    vertical: false,
-                    panels: [
-                        {
-                            title: 'New Panel',
-                            components: []
-                        }
-                    ]
+                    configuration: {
+                        title: 'New Project',
+                        description: 'A new project.',
+                        vertical: false,
+                        panels: [
+                            {
+                                title: 'New Panel',
+                                components: []
+                            }
+                        ]
+                    },
+                    metadata: undefined
                 })
+                revertProjectChanges()
             }}><Icon name="plus" /></a
         >
         <p class="text-lg font-bold">Create New Project</p>
