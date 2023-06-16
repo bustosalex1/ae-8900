@@ -27,10 +27,13 @@
 
 <div class="w-full rounded-md ring-1 ring-neutral-400 p-2 shadow-md">
     <div class="w-full flex flex-row items-center gap-1">
-        <button class="w-full text-left" on:click={toggle}>
-            <p class="font-bold">
-                {componentConfiguration.title}{expanded === 'settings' ? ' / Settings' : ''}
-            </p>
+        <button class="w-full text-left flex flex-row" on:click={toggle}>
+            <input
+                type="text"
+                class="font-bold bg-transparent"
+                bind:value={componentConfiguration.title}
+                on:click|stopPropagation
+            />
         </button>
         {#if expanded !== 'none'}
             <div class="tooltip tooltip-left tooltip-primary z-50" data-tip="Edit">

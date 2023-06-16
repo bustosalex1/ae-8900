@@ -22,7 +22,7 @@
 </script>
 
 <div class="ring-2 ring-base-200 p-1 sticky flex flex-row justify-between items-center">
-    <p class="font-bold">{configuration.title}</p>
+    <input type="text" class="font-bold bg-transparent" bind:value={configuration.title} />
     <button class="btn btn-circle btn-xs btn-ghost" on:click={() => (modal = !modal)}>
         <Icon name="plus" />
     </button>
