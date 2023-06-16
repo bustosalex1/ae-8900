@@ -25,6 +25,7 @@
                 class="font-bold bg-transparent"
                 bind:value={componentConfiguration.title}
                 on:click|stopPropagation
+                on:keyup|preventDefault
             />
         </button>
         {#if componentConfiguration.expanded}
