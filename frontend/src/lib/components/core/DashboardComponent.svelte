@@ -30,7 +30,10 @@
         </button>
         {#if componentConfiguration.expanded}
             <div class="tooltip tooltip-left tooltip-primary z-50" data-tip="Edit">
-                <button in:fly={{ x: 10, duration: 500 }} on:click={() => (settings = !settings)}>
+                <button
+                    transition:fly|local={{ x: 10, duration: 500 }}
+                    on:click={() => (settings = !settings)}
+                >
                     <Icon name="edit" class="feather" />
                 </button>
             </div>
@@ -40,7 +43,7 @@
         </button>
     </div>
     {#if componentConfiguration.expanded && !settings}
-        <div in:slide={{ duration: 500 }}>
+        <div transition:slide|local={{ duration: 500 }}>
             <slot />
         </div>
     {:else if settings}
