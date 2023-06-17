@@ -1,3 +1,15 @@
+# setup the frontend
+setup-frontend:
+    cd frontend && pnpm install
+
+# setup the backend
+setup-backend:
+    cd backend && python -m venv 8900-env
+    backend/8900-env/bin/pip install -r backend/requirements.txt
+
+# setup the frontend and the backend
+setup:
+
 # start the frontend development server
 start-frontend:
     cd frontend && pnpm run dev
