@@ -83,7 +83,8 @@
 *** 6/12/2023 Notes
     Last week was pretty solid in terms of getting a lot of stuff scaffolded and prototyped, and I
     would like to keep that up this week. Here are some priorities I would like to focus on.
-**** TODO Complete Dynamic Component Rendering Scheme
+**** DONE Complete Dynamic Component Rendering Scheme
+     CLOSED: [2023-06-17 Sat 11:58]
      Last week I worked out the general scheme by which components can be dynamically rendered, and
      also worked out how I can automatically generate a string to component mapping of all the
      dashboard components that can be rendered. I would like to use this map to make it so that a
