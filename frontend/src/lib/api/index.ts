@@ -1,7 +1,10 @@
 import createClient from 'openapi-fetch'
 import type { paths, components } from './schema'
-export const { get, post, put } = createClient<paths>({ baseUrl: 'http://localhost:8000' })
+export const { get, post, put, del } = createClient<paths>({ baseUrl: 'http://localhost:8000' })
 
+// basically wraps an API call to make it safe. If the server returns an error code, or if there is
+// a network error, this will handle it and process the errors in the same way. Which right now is
+// just console.logging them lol
 export const apiCall = async <T>(
     apiFunction: Promise<{ data?: T; error?: any; response?: Response }>
 ): Promise<T | undefined> => {

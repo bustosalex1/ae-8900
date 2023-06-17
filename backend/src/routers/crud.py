@@ -101,6 +101,6 @@ async def update_project(state: core.ProjectState) -> core.ProjectState:
 
 
 @router.delete("/project/")
-async def delete_project(state: core.ProjectState) -> core.ProjectState:
+async def delete_project(state: core.ProjectState) -> None:
     """Delete a project and all of its associated files."""
     shutil.rmtree(Path(state.metadata.filepath).parent)

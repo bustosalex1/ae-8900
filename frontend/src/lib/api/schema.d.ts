@@ -208,7 +208,7 @@ export interface operations {
             /** @description Successful Response */
             200: {
                 content: {
-                    'application/json': components['schemas']['ProjectState']
+                    'application/json': unknown
                 }
             }
             /** @description Validation Error */
