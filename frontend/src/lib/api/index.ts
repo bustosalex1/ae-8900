@@ -28,3 +28,7 @@ export type ProjectMetadata = components['schemas']['ProjectMetadata']
 export type ComponentConfiguration = components['schemas']['ComponentConfiguration']
 export type PanelConfiguration = components['schemas']['PanelConfiguration']
 export type ProjectState = components['schemas']['ProjectState']
+
+export type KeyFilter<T, U> = {
+    [K in keyof T]: T[K] extends U ? K : never
+}[keyof T]

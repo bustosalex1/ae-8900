@@ -7,10 +7,11 @@
     import { goto } from '$app/navigation'
     import { page } from '$app/stores'
 
-    const settings: Setting[] = [
+    let settings: Setting[]
+    $: settings = [
         {
-            icon: 'settings',
-            label: 'Project Settings',
+            icon: $page.route?.id === '/project' ? 'settings' : 'arrow-left',
+            label: $page.route?.id === '/project' ? 'Project Settings' : 'Return to Project',
             callback: async () => {
                 if ($page.route?.id === '/project') {
                     await goto('/project/settings')
@@ -35,15 +36,6 @@
             callback: () =>
                 stagedState.update((state) => {
                     state.configuration.panels.push({ title: 'New Panel', components: [] })
-                    return state
-                })
-        },
-        {
-            icon: 'minus',
-            label: 'Remove Panel',
-            callback: () =>
-                stagedState.update((state) => {
-                    state.configuration.panels.pop()
                     return state
                 })
         }

@@ -4,7 +4,7 @@
     import DashboardComponent from './DashboardComponent.svelte'
     import type { PanelConfiguration } from '$lib/api'
     import Modal from './Modal.svelte'
-    import { dashboardMap } from '$lib/stores'
+    import { dashboardMap, stagedState } from '$lib/stores'
     export let configuration: PanelConfiguration
 
     let newComponent = Object.keys(dashboardMap)[0]
@@ -24,9 +24,23 @@
 
 <div class="ring-2 ring-base-200 p-1 sticky flex flex-row justify-between items-center">
     <input type="text" class="font-bold bg-transparent" bind:value={configuration.title} />
-    <button class="btn btn-circle btn-xs btn-ghost" on:click={() => (modal = !modal)}>
-        <Icon name="plus" />
-    </button>
+    <div class="flex flex-row gap-1">
+        <button
+            class="btn btn-circle btn-xs btn-ghost"
+            on:click={() => {
+                const index = $stagedState.configuration.panels.indexOf(configuration)
+                if (index > -1) {
+                    stagedState.update((state) => {
+                        state.configuration.panels.splice(index, 1)
+                        return state
+                    })
+                }
+            }}><Icon name="x" /></button
+        >
+        <button class="btn btn-circle btn-xs btn-ghost" on:click={() => (modal = !modal)}>
+            <Icon name="plus" />
+        </button>
+    </div>
 </div>
 <div class="flex flex-col gap-2 h-screen overflow-y-scroll overflow-x-hidden p-2 pb-20">
     {#each configuration.components as componentConfiguration}
