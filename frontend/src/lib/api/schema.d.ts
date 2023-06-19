@@ -34,6 +34,13 @@ export interface paths {
          */
         delete: operations['delete_project_project__delete']
     }
+    '/websocket_types': {
+        /**
+         * Websocket Types
+         * @description Just an endpoint so that the Measurement type will show up in the openapi.json.
+         */
+        get: operations['websocket_types_websocket_types_get']
+    }
 }
 
 export type webhooks = Record<string, never>
@@ -56,6 +63,21 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components['schemas']['ValidationError'][]
+        }
+        /**
+         * Measurement
+         * @description Defines a single measurement value taken at a particular time.
+         */
+        Measurement: {
+            /** Name */
+            name: string
+            /** Value */
+            value: number
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp: string
         }
         /**
          * PanelConfiguration
@@ -215,6 +237,20 @@ export interface operations {
             422: {
                 content: {
                     'application/json': components['schemas']['HTTPValidationError']
+                }
+            }
+        }
+    }
+    /**
+     * Websocket Types
+     * @description Just an endpoint so that the Measurement type will show up in the openapi.json.
+     */
+    websocket_types_websocket_types_get: {
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': components['schemas']['Measurement']
                 }
             }
         }

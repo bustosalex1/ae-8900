@@ -1,0 +1,12 @@
+session_name: development-servers
+windows:
+  - window_name: servers
+    layout: even-horizontal
+    shell_command_before:
+      - exec /bin/bash # make sure we're using bash
+    panes:
+      - shell_command: # backend server
+          - source ./backend/8900-env/bin/activate
+          - just start-backend
+      - shell_command: # frontend server
+          - just start-frontend

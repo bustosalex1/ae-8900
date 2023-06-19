@@ -14,15 +14,18 @@ const createProjectState = () => {
                     components: [
                         {
                             title: 'Voltage, or Something',
-                            component: 'ReactiveChart'
+                            component: 'ReactiveChart',
+                            expanded: false
                         },
                         {
                             title: 'Power',
-                            component: 'LineChart'
+                            component: 'LineChart',
+                            expanded: false
                         },
                         {
                             title: 'Websocket',
-                            component: 'Websocket'
+                            component: 'Websocket',
+                            expanded: false
                         }
                     ]
                 }

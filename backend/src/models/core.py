@@ -1,6 +1,7 @@
 """Main Pydantic models for my AE-8900 Backend."""
 from datetime import datetime
 from typing import List, Optional
+
 from pydantic import BaseModel
 
 
@@ -44,3 +45,11 @@ class ProjectState(BaseModel):
 
     configuration: ProjectConfiguration
     metadata: Optional[ProjectMetadata]
+
+
+class Measurement(BaseModel):
+    """Defines a single measurement value taken at a particular time."""
+
+    name: str
+    value: float
+    timestamp: datetime

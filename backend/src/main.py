@@ -1,13 +1,12 @@
 """Entrypoint into AE-9000 backend."""
-import asyncio
-import random
-from datetime import datetime
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.routers import crud
+
+from src.routers import crud, websocket
 
 app = FastAPI()
 app.include_router(crud.router)
+app.include_router(websocket.router)
 
 origins = [
     "http://localhost:5173",
@@ -23,13 +22,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    """Just an endpoint to test out websocket connections."""
-    await websocket.accept()
-
-    while True:
-        await asyncio.sleep(0.1)
-        await websocket.send_json({"data": random.random() * 150, "timestamp": datetime.now().timestamp()})

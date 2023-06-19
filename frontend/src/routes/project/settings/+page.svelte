@@ -57,9 +57,8 @@
             {#each textFields as { label, value }}
                 <label class="label cursor-pointer pl-0">
                     <span>{label}</span>
-                    <input
-                        type="text"
-                        class="input input-lg input-bordered"
+                    <textarea
+                        class="textarea textarea-sm textarea-bordered"
                         bind:value={$stagedState.configuration[value]}
                     />
                 </label>
@@ -98,7 +97,7 @@
                     on:click={async () => {
                         await apiCall(del('/project/', { body: $projectState }))
                         goto('/')
-                    }}>Delete Project</button
+                    }}>Delete</button
                 >
             </div>
         </div>
