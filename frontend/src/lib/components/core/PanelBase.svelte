@@ -4,9 +4,9 @@
     import DashboardComponent from './DashboardComponent.svelte'
     import type { PanelConfiguration } from '$lib/api'
     import Modal from './Modal.svelte'
-    import { dashboardMap, stagedState } from '$lib/stores'
+    import { getDashboardMap, stagedState } from '$lib/stores'
     export let configuration: PanelConfiguration
-
+    const dashboardMap = getDashboardMap()
     let newComponent = Object.keys(dashboardMap)[0]
 
     let modal = false

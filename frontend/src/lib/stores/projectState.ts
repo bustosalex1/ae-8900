@@ -21,11 +21,6 @@ const createProjectState = () => {
                             title: 'Power',
                             component: 'LineChart',
                             expanded: false
-                        },
-                        {
-                            title: 'Websocket',
-                            component: 'Websocket',
-                            expanded: false
                         }
                     ]
                 }

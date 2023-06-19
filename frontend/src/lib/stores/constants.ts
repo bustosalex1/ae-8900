@@ -8,5 +8,7 @@ export const themes = {
     dark: 'dracula'
 }
 
-// insane that this works
-export const dashboardMap = Object.fromEntries(Object.entries(dashboard))
+// for future reference, I made this a function because SvelteKit HMR would get mad if I tried to
+// update components from the dashboard while running the development server. Not a huge deal but
+// this seems to work around that.
+export const getDashboardMap = () => Object.fromEntries(Object.entries(dashboard))
