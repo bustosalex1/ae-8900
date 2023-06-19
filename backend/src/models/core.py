@@ -2,6 +2,7 @@
 from datetime import datetime
 from typing import List, Optional
 
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 
 
@@ -53,3 +54,8 @@ class Measurement(BaseModel):
     name: str
     value: float
     timestamp: datetime
+
+    class Config:
+        """Config options for the Measurement model."""
+
+        json_encoders = {datetime: lambda value: value.isoformat()}

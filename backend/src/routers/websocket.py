@@ -1,13 +1,14 @@
 """Websocket endpoints for my AE 8900 backend API."""
 from datetime import datetime
 
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
+                                   ConnectionClosedOK)
 
-from src.data_processing import daq
+from src.management.dependencies import ConnectionManagerDependency
 from src.models import core
 
 router = APIRouter()
-dm = daq.DataManager()
 
 
 @router.get("/websocket_types")
@@ -17,26 +18,12 @@ def websocket_types() -> core.Measurement:
 
 
 @router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(websocket: WebSocket, connection_manager: ConnectionManagerDependency):
     """Just an endpoint to test out websocket connections."""
-    await websocket.accept()
-
-    source1 = daq.DataStream(
-        name="CPU",
-        callback=daq.get_cpu,
-        interval=0.1,
-    )
-
-    source2 = daq.DataStream(
-        name="RAM",
-        callback=daq.get_ram,
-        interval=1,
-    )
-    dm.subscribe(source1)
-    dm.subscribe(source2)
-
-    while True:
-        measurement = await dm.queue.get()
-        measurement_dict = measurement.dict()
-        measurement_dict["timestamp"] = measurement_dict["timestamp"].isoformat()
-        await websocket.send_json(measurement_dict, mode="text")
+    try:
+        await connection_manager.connect(websocket)
+        while True:
+            # I'm not expecting any text from connections at the moment, this is just to keep the connection open.
+            await websocket.receive_text()
+    except (ConnectionClosed, ConnectionClosedOK, ConnectionClosedError, WebSocketDisconnect):
+        await connection_manager.disconnect(websocket)

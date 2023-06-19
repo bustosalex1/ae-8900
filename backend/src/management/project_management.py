@@ -1,10 +1,11 @@
 """Project management utilities for my AE 8900 backend."""
-import yaml
 import os
-from pathlib import Path
-from src.models import core
 from datetime import datetime
+from pathlib import Path
 
+import yaml
+
+from src.models import core
 
 # constant directories
 BACKEND_DIR = Path(__file__).parent.parent.parent
@@ -32,5 +33,4 @@ def load_project(filepath: Path) -> core.ProjectState:
             ),
         )
 
-    # return the project state
     return project_state
