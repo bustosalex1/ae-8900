@@ -1,41 +1,33 @@
 <script lang="ts">
+    import type { ComponentSettings } from '$lib/api'
     import { connectionManager } from '$lib/websocket/connectionManager'
-    import { spring } from 'svelte/motion'
+    import { onMount } from 'svelte'
+    import { tweened } from 'svelte/motion'
 
-    let cpuStore = connectionManager.measurementQueues.get('CPU')
-    let ramStore = connectionManager.measurementQueues.get('RAM')
-    let cpu = spring(0, {
-        stiffness: 0.05,
-        damping: 0.8
+    // comply with dashboard standard.
+    export let settings: ComponentSettings
+
+    const cpuStore = connectionManager.getMeasurementStream('CPU')
+    const ramStore = connectionManager.getMeasurementStream('RAM')
+
+    const cpuTweened = tweened(0, { duration: 1000 })
+    const ramTweened = tweened(0)
+
+    $: $cpuStore && $cpuStore.length > 0 && cpuTweened.set($cpuStore[$cpuStore.length - 1][1])
+    $: $ramStore && $ramStore.length > 0 && ramTweened.set($ramStore[$ramStore.length - 1][1])
+
+    onMount(() => {
+        console.log(`SystemStatus has unused ${settings} right now :)`)
     })
-
-    let ram = spring(0, {
-        stiffness: 0.05,
-        damping: 0.8
-    })
-
-    $: {
-        let newCPU = $cpuStore?.at($cpuStore.length - 1)
-
-        if (newCPU) {
-            cpu.set(newCPU[1])
-        }
-
-        let newRAM = $ramStore?.at($ramStore.length - 1)
-
-        if (newRAM) {
-            ram.set(newRAM[1])
-        }
-    }
 </script>
 
 <div class="flex flex-col gap-2 m-2">
     <div class="flex flex-row items-center justify-between">
-        <p class="whitespace-nowrap">CPU Usage</p>
-        <progress class="progress w-52 progress-primary" value={$cpu} max="100" />
+        <p class="whitespace-nowrap">CPU ({$cpuTweened.toFixed(2)}%)</p>
+        <progress class="progress w-56" value={$cpuTweened} max="100" />
     </div>
     <div class="flex flex-row items-center justify-between">
-        <p class="whitespace-nowrap">RAM Usage</p>
-        <progress class="progress progress-primary w-52" value={$ram} max="100" />
+        <p class="whitespace-nowrap">RAM</p>
+        <progress class="progress w-56" value={$ramTweened} max="100" />
     </div>
 </div>

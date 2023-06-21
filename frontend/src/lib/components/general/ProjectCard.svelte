@@ -20,7 +20,7 @@
             <div
                 class="w-full h-48 bg-gradient-to-br from-primary via-secondary to-white flex flex-col justify-center align-middle text-5xl font-black items-center"
             >
-                <Icon name="heart" />
+                <Icon name="hard-drive" />
             </div>
         </figure>
         <div class="p-3 card-body">

@@ -1,11 +1,13 @@
 """Websocket endpoints for my AE 8900 backend API."""
 from datetime import datetime
+from typing import List
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
                                    ConnectionClosedOK)
 
-from src.management.dependencies import ConnectionManagerDependency
+from src.management.dependencies import (ConnectionManagerDependency,
+                                         DataManagerDependency)
 from src.models import core
 
 router = APIRouter()
@@ -15,6 +17,33 @@ router = APIRouter()
 def websocket_types() -> core.Measurement:
     """Just an endpoint so that the Measurement type will show up in the openapi.json."""
     return core.Measurement(name="sample", value=0, timestamp=datetime.now())
+
+
+@router.get("/data_sources")
+def data_sources(data_manager: DataManagerDependency) -> List[str]:
+    """Get the available DataStreams."""
+    print(data_manager.sources)
+    return list(data_manager.sources.keys())
+
+
+@router.put("/start_stream/{stream_name}")
+async def start_stream(stream_name: str, data_manager: DataManagerDependency) -> None:
+    """
+    Start collecting data from a stream.
+
+    :param stream_name: the string key associated with the DataStream to start.
+    """
+    data_manager.start_stream(stream_name)
+
+
+@router.put("/stop_stream/{stream_name}")
+async def stop_stream(stream_name: str, data_manager: DataManagerDependency) -> None:
+    """
+    Stop data collection from a stream.
+
+    :param stream_name: the string key associated with the DataStream to stop.
+    """
+    await data_manager.stop_stream(stream_name)
 
 
 @router.websocket("/ws")

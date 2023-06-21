@@ -45,8 +45,10 @@ class ConnectionManager:
         self.active_connections.remove(websocket)
 
         if len(self.active_connections) == 0:
+            for _, stream in self.data_manager.sources.items():
+                await stream.stop()
             self.stop_event.set()
-            await self.task
+            self.task.cancel()
             self.task = None
 
     async def send(self, message: str, websocket: WebSocket):

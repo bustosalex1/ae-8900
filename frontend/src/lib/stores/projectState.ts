@@ -15,12 +15,18 @@ const createProjectState = () => {
                         {
                             title: 'Voltage, or Something',
                             component: 'ReactiveChart',
-                            expanded: false
+                            expanded: false,
+                            settings: {
+                                data_sources: []
+                            }
                         },
                         {
                             title: 'Power',
                             component: 'LineChart',
-                            expanded: false
+                            expanded: false,
+                            settings: {
+                                data_sources: []
+                            }
                         }
                     ]
                 }

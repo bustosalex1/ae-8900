@@ -1,9 +1,14 @@
 """Main Pydantic models for my AE-8900 Backend."""
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
-from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
+
+
+class ComponentSettings(BaseModel):
+    """Defines generic settings for a single dashboard component."""
+
+    data_sources: List[str]
 
 
 class ComponentConfiguration(BaseModel):
@@ -12,6 +17,7 @@ class ComponentConfiguration(BaseModel):
     title: str
     component: str
     expanded: bool
+    settings: ComponentSettings
 
 
 class PanelConfiguration(BaseModel):
@@ -52,10 +58,37 @@ class Measurement(BaseModel):
     """Defines a single measurement value taken at a particular time."""
 
     name: str
-    value: float
+    value: float | int
+    units: str | None
     timestamp: datetime
 
     class Config:
         """Config options for the Measurement model."""
+
+        json_encoders = {datetime: lambda value: value.isoformat()}
+
+
+class Field(BaseModel):
+    """Defines a... field."""
+
+    value: float | int
+    units: str | None
+
+
+class MessageHeader(BaseModel):
+    """Just an idea for more generic / flexible messages."""
+
+    name: str
+    timestamp: datetime
+
+
+class GenericMessage(BaseModel):
+    """Part of the generic / flexible message idea..."""
+
+    header: MessageHeader
+    payload: Dict[str, Field]
+
+    class Config:
+        """Config options for GenericMessage model."""
 
         json_encoders = {datetime: lambda value: value.isoformat()}

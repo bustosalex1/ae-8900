@@ -1,10 +1,17 @@
 <script lang="ts">
     import * as echarts from 'echarts'
-    import { onMount } from 'svelte/internal'
-    import { connectionManager } from '$lib/websocket/connectionManager'
+    import { onDestroy, onMount } from 'svelte/internal'
+    import type { ComponentSettings } from '$lib/api'
+    import { ComponentDataManager } from '$lib/websocket/connectionManager'
 
-    let dataStore = connectionManager.measurementQueues.get('CPU')
-    let ramStore = connectionManager.measurementQueues.get('RAM')
+    // comply with dashboard standard
+    export let settings: ComponentSettings
+
+    // data manager manages subscriptions dynamic websocket streams
+    const dataManager = new ComponentDataManager([])
+    $: dataManager.onSourceChange(settings.data_sources)
+
+    /** ECharts stuff */
     let userInteracting = false
     let chartDOM: HTMLElement
     let option: echarts.EChartsCoreOption
@@ -12,10 +19,30 @@
     let w: number
     let h: number
 
-    let data = $dataStore ? $dataStore : []
-    let ramData = $ramStore ? $ramStore : []
+    /** sort of nice way to dynamically get websocket updates to ECharts */
+    dataManager.updateCallback = (dataMap) => {
+        myChart &&
+            !userInteracting &&
+            myChart.setOption({
+                series: Array.from(dataMap.entries()).map(([key, value]) => {
+                    return {
+                        name: key,
+                        type: 'line',
+                        data: value,
+                        symbol: 'none',
+                        showSymbol: false
+                    }
+                })
+            })
+    }
 
-    onMount(() => {
+    onDestroy(() => {
+        /** Unsubscribe from everything when the component is unmounted */
+        dataManager.destroy()
+    })
+
+    onMount(async () => {
+        /** initialize ECharts stuff */
         myChart = echarts.init(chartDOM, undefined, { width: 600, height: 400 })
         option = {
             legend: {},
@@ -28,7 +55,7 @@
             },
             yAxis: {
                 type: 'value',
-                name: 'CPU Usage (%)',
+                name: '(%)',
                 min: 0,
                 max: 100,
                 boundaryGap: [0, '100%'],
@@ -37,22 +64,7 @@
                 }
             },
             animation: false,
-            series: [
-                {
-                    name: 'CPU',
-                    type: 'line',
-                    symbol: 'none',
-                    showSymbol: false,
-                    data: data
-                },
-                {
-                    name: 'RAM',
-                    type: 'line',
-                    symbol: 'none',
-                    showSymbol: false,
-                    data: ramData
-                }
-            ],
+            series: [],
             dataZoom: [
                 {
                     id: 'dataZoomX',
@@ -70,24 +82,8 @@
         myChart.setOption(option)
     })
 
+    // resize chart when panel changes
     $: myChart && myChart.resize({ width: w, height: h })
-
-    $: if (!userInteracting) {
-        myChart &&
-            myChart.setOption(
-                {
-                    series: [
-                        {
-                            data: $dataStore
-                        },
-                        {
-                            data: $ramStore
-                        }
-                    ]
-                },
-                { notMerge: false, lazyUpdate: true }
-            )
-    }
 </script>
 
 <div

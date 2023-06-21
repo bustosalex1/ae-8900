@@ -41,6 +41,31 @@ export interface paths {
          */
         get: operations['websocket_types_websocket_types_get']
     }
+    '/data_sources': {
+        /**
+         * Data Sources
+         * @description Get the available DataStreams.
+         */
+        get: operations['data_sources_data_sources_get']
+    }
+    '/start_stream/{stream_name}': {
+        /**
+         * Start Stream
+         * @description Start collecting data from a stream.
+         *
+         * :param stream_name: the string key associated with the DataStream to start.
+         */
+        put: operations['start_stream_start_stream__stream_name__put']
+    }
+    '/stop_stream/{stream_name}': {
+        /**
+         * Stop Stream
+         * @description Stop data collection from a stream.
+         *
+         * :param stream_name: the string key associated with the DataStream to stop.
+         */
+        put: operations['stop_stream_stop_stream__stream_name__put']
+    }
 }
 
 export type webhooks = Record<string, never>
@@ -58,6 +83,15 @@ export interface components {
             component: string
             /** Expanded */
             expanded: boolean
+            settings: components['schemas']['ComponentSettings']
+        }
+        /**
+         * ComponentSettings
+         * @description Defines generic settings for a single dashboard component.
+         */
+        ComponentSettings: {
+            /** Data Sources */
+            data_sources: string[]
         }
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -73,6 +107,8 @@ export interface components {
             name: string
             /** Value */
             value: number
+            /** Units */
+            units?: string
             /**
              * Timestamp
              * Format: date-time
@@ -251,6 +287,74 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['Measurement']
+                }
+            }
+        }
+    }
+    /**
+     * Data Sources
+     * @description Get the available DataStreams.
+     */
+    data_sources_data_sources_get: {
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': string[]
+                }
+            }
+        }
+    }
+    /**
+     * Start Stream
+     * @description Start collecting data from a stream.
+     *
+     * :param stream_name: the string key associated with the DataStream to start.
+     */
+    start_stream_start_stream__stream_name__put: {
+        parameters: {
+            path: {
+                stream_name: string
+            }
+        }
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': unknown
+                }
+            }
+            /** @description Validation Error */
+            422: {
+                content: {
+                    'application/json': components['schemas']['HTTPValidationError']
+                }
+            }
+        }
+    }
+    /**
+     * Stop Stream
+     * @description Stop data collection from a stream.
+     *
+     * :param stream_name: the string key associated with the DataStream to stop.
+     */
+    stop_stream_stop_stream__stream_name__put: {
+        parameters: {
+            path: {
+                stream_name: string
+            }
+        }
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': unknown
+                }
+            }
+            /** @description Validation Error */
+            422: {
+                content: {
+                    'application/json': components['schemas']['HTTPValidationError']
                 }
             }
         }

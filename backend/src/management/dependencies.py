@@ -1,5 +1,4 @@
 """Dependencies that can be used with FastAPI dependency injection for... safety or something."""
-
 from typing import Annotated
 
 from fastapi import Depends
@@ -9,22 +8,6 @@ from src.management import connection_management
 
 # set up managers, which should only be initialized once for a backend instance.
 data_manager = daq.DataManager()
-
-source1 = daq.DataStream(
-    name="CPU",
-    callback=daq.get_cpu,
-    interval=0.1,
-)
-
-source2 = daq.DataStream(
-    name="RAM",
-    callback=daq.get_ram,
-    interval=1,
-)
-
-data_manager.subscribe(source1)
-data_manager.subscribe(source2)
-
 connection_manager = connection_management.ConnectionManager(data_manager=data_manager)
 
 

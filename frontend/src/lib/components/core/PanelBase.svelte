@@ -1,22 +1,28 @@
 <script lang="ts">
     import Icon from '$lib/components/general/Icon.svelte'
-    import { fly } from 'svelte/transition'
     import DashboardComponent from './DashboardComponent.svelte'
-    import type { PanelConfiguration } from '$lib/api'
     import Modal from './Modal.svelte'
-    import { getDashboardMap, stagedState } from '$lib/stores'
+    import type { PanelConfiguration } from '$lib/api'
+    import { fly } from 'svelte/transition'
+    import { stagedState } from '$lib/stores'
+    import { componentRegistry } from '../dashboard'
+
+    // each panel gets passed a configuration
     export let configuration: PanelConfiguration
-    const dashboardMap = getDashboardMap()
-    let newComponent = Object.keys(dashboardMap)[0]
 
     let modal = false
+    let newComponent = ''
+
     const addComponent = () => {
         configuration.components = [
             ...configuration.components,
             {
                 title: 'New Component',
                 component: newComponent,
-                expanded: false
+                expanded: false,
+                settings: {
+                    data_sources: []
+                }
             }
         ]
     }
@@ -24,6 +30,7 @@
 
 <div class="ring-2 ring-base-200 p-1 sticky flex flex-row justify-between items-center">
     <input type="text" class="font-bold bg-transparent" bind:value={configuration.title} />
+
     <div class="flex flex-row gap-1">
         <button
             class="btn btn-circle btn-xs btn-ghost"
@@ -46,7 +53,10 @@
     {#each configuration.components as componentConfiguration}
         <div in:fly={{ y: -10, duration: 350 }}>
             <DashboardComponent {componentConfiguration}>
-                <svelte:component this={dashboardMap[componentConfiguration.component]} />
+                <svelte:component
+                    this={componentRegistry[componentConfiguration.component]}
+                    settings={componentConfiguration.settings}
+                />
             </DashboardComponent>
         </div>
     {/each}
@@ -55,13 +65,13 @@
 {#if modal}
     <Modal>
         <select class="select select-bordered w-full max-w-xs" bind:value={newComponent}>
-            {#each Object.entries(dashboardMap) as [dashboardComponent]}
+            {#each Object.entries(componentRegistry) as [dashboardComponent]}
                 <option>{dashboardComponent}</option>
             {/each}
         </select>
         <button
             class="btn"
-            disabled={newComponent === undefined}
+            disabled={newComponent === ''}
             on:click={() => {
                 addComponent()
                 modal = false

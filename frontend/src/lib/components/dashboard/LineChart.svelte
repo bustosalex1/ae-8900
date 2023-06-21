@@ -1,7 +1,12 @@
 <script lang="ts">
+    import type { ComponentSettings } from '$lib/api'
     import * as echarts from 'echarts'
     import { onMount } from 'svelte/internal'
 
+    // comply with dashboard standard.
+    export let settings: ComponentSettings
+
+    /** ECharts variables */
     let chartDOM: HTMLElement
     let option: echarts.EChartsCoreOption
     let myChart: echarts.ECharts
@@ -9,6 +14,8 @@
     let h: number
 
     onMount(() => {
+        console.log(`LineChart has unused ${settings} right now :)`)
+
         myChart = echarts.init(chartDOM, undefined, { width: 600, height: 400 })
         option = {
             xAxis: {

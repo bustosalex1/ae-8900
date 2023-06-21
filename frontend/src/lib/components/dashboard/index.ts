@@ -1,3 +1,13 @@
-export { default as LineChart } from './LineChart.svelte'
-export { default as ReactiveChart } from './ReactiveChart.svelte'
-export { default as SystemStatus } from './SystemStatus.svelte'
+import LineChart from './LineChart.svelte'
+import ReactiveChart from './ReactiveChart.svelte'
+import SystemStatus from './SystemStatus.svelte'
+import type { SvelteComponent } from 'svelte'
+
+/**
+ * A string to component mapping that is used to dynamically render layouts saved as YAML.
+ */
+export const componentRegistry: Record<string, typeof SvelteComponent> = {
+    LineChart: LineChart,
+    ReactiveChart: ReactiveChart,
+    SystemStatus: SystemStatus
+}
