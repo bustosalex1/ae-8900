@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, BaseSettings, Field
 
 
 class ComponentSettings(BaseModel):
@@ -69,33 +69,8 @@ class Measurement(BaseModel):
         json_encoders = {datetime: lambda value: value.isoformat()}
 
 
-class Field(BaseModel):
-    """Defines a... field."""
-
-    value: float | int
-    units: str | None
-
-
-class MessageHeader(BaseModel):
-    """Just an idea for more generic / flexible messages."""
-
-    name: str
-    timestamp: datetime
-
-
-class GenericMessage(BaseModel):
-    """Part of the generic / flexible message idea..."""
-
-    header: MessageHeader
-    payload: Dict[str, Field]
-
-    class Config:
-        """Config options for GenericMessage model."""
-
-        json_encoders = {datetime: lambda value: value.isoformat()}
-
-
-class ProjectSettings(BaseModel):
+class ProjectSettings(BaseSettings):
     """Project wide backend settings."""
 
     active_project_directory: Path | None
+    host_ip: str | None = Field(default=None, env="PUBLIC_HOST_IP")

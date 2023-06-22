@@ -1,4 +1,5 @@
 import { apiCall, get, type Measurement } from '$lib/api'
+import { PUBLIC_HOST_IP } from '$env/static/public'
 import type { Unsubscriber, Writable } from 'svelte/store'
 import { createMeasurementStore } from '$lib/stores'
 
@@ -66,7 +67,8 @@ class ConnectionManager {
     }
 }
 
-export const connectionManager = new ConnectionManager('ws://localhost:8000/ws', 1000 * 60 * 3)
+const baseURL = PUBLIC_HOST_IP || 'localhost'
+export const connectionManager = new ConnectionManager(`ws://${baseURL}:8000/ws`, 1000 * 60 * 3)
 
 /** This seems... wrong. or bad. */
 await connectionManager.syncSources()

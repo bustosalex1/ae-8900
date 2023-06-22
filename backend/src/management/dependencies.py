@@ -5,12 +5,19 @@ from fastapi import Depends
 
 from src.data_processing import daq
 from src.management import connection_management
+from src.management.project_management import BACKEND_DIR
 from src.models import core
 
 # set up managers, which should only be initialized once for a backend instance.
 data_manager = daq.DataManager()
 connection_manager = connection_management.ConnectionManager(data_manager=data_manager)
-project_settings = core.ProjectSettings(active_project_directory=None)
+
+# initialize project-wide settings and pull in environment files
+project_settings = core.ProjectSettings(
+    _env_file=BACKEND_DIR.parent / ".env",
+    _env_file_encoding="utf-8",
+    active_project_directory=None,
+)
 
 
 def get_data_manager() -> daq.DataManager:
@@ -35,6 +42,8 @@ def get_settings() -> core.ProjectSettings:
     """Dependency for project settings."""
     return project_settings
 
+
+print(get_settings())
 
 # cool type hinting, even with dependencies, apparently
 ConnectionManagerDependency = Annotated[connection_management.ConnectionManager, Depends(get_connection_manager)]

@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { ComponentSettings } from '$lib/api'
     import * as echarts from 'echarts'
-    import { onMount } from 'svelte/internal'
+    import { onMount } from 'svelte'
 
     // comply with dashboard standard.
     export let settings: ComponentSettings

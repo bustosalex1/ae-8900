@@ -1,7 +1,8 @@
-"""Entrypoint into AE-9000 backend."""
+"""Entrypoint into my AE 8900 backend."""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.management.dependencies import get_settings
 from src.routers import crud, websocket
 
 app = FastAPI()
@@ -14,6 +15,19 @@ origins = [
     "http://localhost",
     "https://localhost",
 ]
+
+settings = get_settings()
+
+if settings.host_ip is not None:
+    origins.extend(
+        [
+            f"http://{settings.host_ip}:5173",
+            f"https://{settings.host_ip}:5173",
+            f"http://{settings.host_ip}",
+            f"https://{settings.host_ip}",
+        ]
+    )
+
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,6 +1,10 @@
 import createClient from 'openapi-fetch'
+import { PUBLIC_HOST_IP } from '$env/static/public'
 import type { paths, components } from './schema'
-export const { get, post, put, del } = createClient<paths>({ baseUrl: 'http://localhost:8000' })
+
+const baseUrl = PUBLIC_HOST_IP || 'localhost'
+console.log(baseUrl)
+export const { get, post, put, del } = createClient<paths>({ baseUrl: `http://${baseUrl}:8000` })
 
 // basically wraps an API call to make it safe. If the server returns an error code, or if there is
 // a network error, this will handle it and process the errors in the same way. Which right now is

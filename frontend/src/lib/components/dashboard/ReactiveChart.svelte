@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as echarts from 'echarts'
-    import { onDestroy, onMount } from 'svelte/internal'
+    import { onDestroy, onMount } from 'svelte'
     import type { ComponentSettings } from '$lib/api'
     import { ComponentDataManager } from '$lib/websocket/connectionManager'
 
@@ -88,6 +88,7 @@
 
 <div
     class="w-full h-96"
+    role="presentation"
     bind:clientWidth={w}
     bind:clientHeight={h}
     on:mousedown={() => (userInteracting = true)}

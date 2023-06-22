@@ -1,3 +1,14 @@
+# bash only
+set shell := ["bash", "-c"]
+
+# setup the environment, I don't know of a better way to do this right now
+setup-environment:
+    @read -p "Enter host IP address: " ip_address && \
+    echo "PUBLIC_HOST_IP=$ip_address" > .env
+
+clear-environment:
+    echo "PUBLIC_HOST_IP=" > .env
+
 # setup the frontend
 setup-frontend:
     cd frontend && pnpm install
@@ -27,11 +38,11 @@ host-frontend:
 
 # start both the frontend and backend servers exposed to the network in a tmux session
 host: stop
-    tmuxp load host.yaml
+    tmuxp load config/host.yaml
 
 # start both the frontend and backend development servers in a tmux session
 start: stop
-    tmuxp load session.yaml
+    tmuxp load config/session.yaml
 
 # kill the active tmux session associated with the AE 8900 project
 stop:
