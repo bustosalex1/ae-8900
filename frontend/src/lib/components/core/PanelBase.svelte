@@ -63,19 +63,22 @@
 </div>
 
 {#if modal}
-    <Modal>
-        <select class="select select-bordered w-full max-w-xs" bind:value={newComponent}>
-            {#each Object.entries(componentRegistry) as [dashboardComponent]}
-                <option>{dashboardComponent}</option>
-            {/each}
-        </select>
-        <button
-            class="btn"
-            disabled={newComponent === ''}
-            on:click={() => {
-                addComponent()
-                modal = false
-            }}>Add Component</button
-        >
+    <Modal dim={true}>
+        <div class="flex flex-col gap-4 m-4">
+            <div class="text-xl font-bold">Add New Component</div>
+            <select class="select select-bordered w-full max-w-xs" bind:value={newComponent}>
+                {#each Object.entries(componentRegistry) as [dashboardComponent]}
+                    <option>{dashboardComponent}</option>
+                {/each}
+            </select>
+            <button
+                class="btn"
+                disabled={newComponent === ''}
+                on:click={() => {
+                    addComponent()
+                    modal = false
+                }}>Add Component</button
+            >
+        </div>
     </Modal>
 {/if}

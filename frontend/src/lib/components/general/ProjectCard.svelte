@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { ProjectState } from '$lib/api'
+    import { type ProjectState, apiCall, post } from '$lib/api'
     import { setActiveProject } from '$lib/stores'
     import FormattedDate from './FormattedDate.svelte'
     import Icon from './Icon.svelte'
@@ -9,8 +9,16 @@
 
 <a
     href="/project"
-    on:click={() => {
+    on:click={async () => {
         setActiveProject(state)
+
+        if (state.metadata) {
+            await apiCall(
+                post('/active_project', {
+                    params: { query: { active_project_config: state.metadata?.filepath } }
+                })
+            )
+        }
     }}
 >
     <div

@@ -10,3 +10,18 @@ def get_cpu() -> float:
 def get_ram() -> float:
     """Get the RAM utilization as a percent."""
     return psutil.virtual_memory().percent
+
+
+def get_cpu_temp() -> float:
+    """
+    Get CPU Temperature in degrees Celsius.
+
+    Supports Thinkpads and Raspberry Pis only!
+    """
+    value = 0
+    try:
+        value = psutil.sensors_temperatures()["thinkpad"][0].current
+    except Exception:
+        value = psutil.sensors_temperatures()["cpu_thermal"][0].current
+    finally:
+        return value

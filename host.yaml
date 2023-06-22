@@ -7,6 +7,6 @@ windows:
     panes:
       - shell_command: # backend server
           - source ./backend/8900-env/bin/activate
-          - just start-backend
+          - just host-backend
       - shell_command: # frontend server
-          - just start-frontend
+          - just host-frontend

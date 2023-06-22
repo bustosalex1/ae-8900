@@ -4,14 +4,21 @@
  */
 
 export interface paths {
-    '/projects/': {
+    '/projects': {
         /**
          * Get Projects
          * @description Return the ProjectState for all projects in the PROJECTS_DIR directory.
          */
-        get: operations['get_projects_projects__get']
+        get: operations['get_projects_projects_get']
     }
-    '/project/': {
+    '/active_project': {
+        /**
+         * Set Active Project
+         * @description Set the active project in the backend.
+         */
+        post: operations['set_active_project_active_project_post']
+    }
+    '/project': {
         /**
          * Update Project
          * @description Update a project's config.yaml.
@@ -19,7 +26,7 @@ export interface paths {
          * :param state: the updated project state.
          * :return: the updated project information.
          */
-        put: operations['update_project_project__put']
+        put: operations['update_project_project_put']
         /**
          * Create Project
          * @description Scaffold a new project in PROJECTS_DIR with a configuration file and some folders.
@@ -27,12 +34,30 @@ export interface paths {
          * :param configuration: the configuration of the new project to create.
          * :return: the configuration of the new project that was created.
          */
-        post: operations['create_project_project__post']
+        post: operations['create_project_project_post']
         /**
          * Delete Project
          * @description Delete a project and all of its associated files.
          */
-        delete: operations['delete_project_project__delete']
+        delete: operations['delete_project_project_delete']
+    }
+    '/start_recording': {
+        /**
+         * Start Recording
+         * @description Start recording data.
+         *
+         * I think.
+         */
+        post: operations['start_recording_start_recording_post']
+    }
+    '/stop_recording': {
+        /**
+         * Stop Recording
+         * @description Start recording data.
+         *
+         * I think.
+         */
+        post: operations['stop_recording_stop_recording_post']
     }
     '/websocket_types': {
         /**
@@ -186,12 +211,37 @@ export interface operations {
      * Get Projects
      * @description Return the ProjectState for all projects in the PROJECTS_DIR directory.
      */
-    get_projects_projects__get: {
+    get_projects_projects_get: {
         responses: {
             /** @description Successful Response */
             200: {
                 content: {
                     'application/json': components['schemas']['ProjectState'][]
+                }
+            }
+        }
+    }
+    /**
+     * Set Active Project
+     * @description Set the active project in the backend.
+     */
+    set_active_project_active_project_post: {
+        parameters: {
+            query: {
+                active_project_config: string
+            }
+        }
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': unknown
+                }
+            }
+            /** @description Validation Error */
+            422: {
+                content: {
+                    'application/json': components['schemas']['HTTPValidationError']
                 }
             }
         }
@@ -203,7 +253,7 @@ export interface operations {
      * :param state: the updated project state.
      * :return: the updated project information.
      */
-    update_project_project__put: {
+    update_project_project_put: {
         requestBody: {
             content: {
                 'application/json': components['schemas']['ProjectState']
@@ -231,7 +281,7 @@ export interface operations {
      * :param configuration: the configuration of the new project to create.
      * :return: the configuration of the new project that was created.
      */
-    create_project_project__post: {
+    create_project_project_post: {
         requestBody: {
             content: {
                 'application/json': components['schemas']['ProjectState']
@@ -256,7 +306,7 @@ export interface operations {
      * Delete Project
      * @description Delete a project and all of its associated files.
      */
-    delete_project_project__delete: {
+    delete_project_project_delete: {
         requestBody: {
             content: {
                 'application/json': components['schemas']['ProjectState']
@@ -273,6 +323,54 @@ export interface operations {
             422: {
                 content: {
                     'application/json': components['schemas']['HTTPValidationError']
+                }
+            }
+        }
+    }
+    /**
+     * Start Recording
+     * @description Start recording data.
+     *
+     * I think.
+     */
+    start_recording_start_recording_post: {
+        parameters: {
+            query: {
+                interval: number
+            }
+        }
+        requestBody: {
+            content: {
+                'application/json': string[]
+            }
+        }
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': unknown
+                }
+            }
+            /** @description Validation Error */
+            422: {
+                content: {
+                    'application/json': components['schemas']['HTTPValidationError']
+                }
+            }
+        }
+    }
+    /**
+     * Stop Recording
+     * @description Start recording data.
+     *
+     * I think.
+     */
+    stop_recording_stop_recording_post: {
+        responses: {
+            /** @description Successful Response */
+            200: {
+                content: {
+                    'application/json': unknown
                 }
             }
         }

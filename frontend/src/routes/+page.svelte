@@ -8,7 +8,7 @@
     let projects: ProjectState[] | undefined = undefined
 
     onMount(async () => {
-        projects = await apiCall(get('/projects/', {}))
+        projects = await apiCall(get('/projects', {}))
     })
 </script>
 

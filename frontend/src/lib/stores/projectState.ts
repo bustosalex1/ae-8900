@@ -56,13 +56,13 @@ export const applyProjectChanges = async () => {
     let updatedState: ProjectState | undefined = undefined
     if (state.metadata) {
         updatedState = await apiCall(
-            put('/project/', {
+            put('/project', {
                 body: state
             })
         )
     } else {
         updatedState = await apiCall(
-            post('/project/', {
+            post('/project', {
                 body: state
             })
         )

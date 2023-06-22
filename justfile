@@ -16,17 +16,30 @@ start-backend:
     set PYTHONPATH $(pwd)
     cd backend && uvicorn src.main:app --reload
 
+# start the backend development server and expose it on the network
+host-backend:
+    set PYTHONPATH $(pwd)
+    cd backend && uvicorn src.main:app --host 0.0.0.0 --port 8000
+
+# start the frontend development server and expose it on the network
+host-frontend:
+    cd frontend && pnpm run dev --host
+
+# start both the frontend and backend servers exposed to the network in a tmux session
+host: stop
+    tmuxp load host.yaml
+
 # start both the frontend and backend development servers in a tmux session
 start: stop
     tmuxp load session.yaml
 
 # kill the active tmux session associated with the AE 8900 project
 stop:
-    -tmux kill-session -t development-servers
+    -tmux kill-session -t servers
 
 # see whether or not the development servers are running
 @status:
-    -tmux has-session -t development-servers && printf "\033[1;32mDevelopment server is running.\033[0m" || printf "\033[1;31mDevelopment server is not running.\033[0m"
+    -tmux has-session -t servers && printf "\033[1;32mDevelopment server is running.\033[0m" || printf "\033[1;31mDevelopment server is not running.\033[0m"
 
 # generate typescript API from FastAPI backend and format it with prettier. Make sure the backend server is running!
 generate-api:
@@ -50,3 +63,7 @@ check-backend-health: lint-backend backend-dependency-diff
 
 # run a general health check on the entire project
 check-health: lint-backend backend-dependency-diff lint-frontend
+
+# remove old projects
+remove-projects:
+    rm -rf backend/projects/*

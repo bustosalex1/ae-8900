@@ -1,5 +1,6 @@
 """Main Pydantic models for my AE-8900 Backend."""
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel
@@ -92,3 +93,9 @@ class GenericMessage(BaseModel):
         """Config options for GenericMessage model."""
 
         json_encoders = {datetime: lambda value: value.isoformat()}
+
+
+class ProjectSettings(BaseModel):
+    """Project wide backend settings."""
+
+    active_project_directory: Path | None

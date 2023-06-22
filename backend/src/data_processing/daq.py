@@ -1,6 +1,8 @@
 """Data acquisition for my AE 8900 backend."""
 import asyncio
+import csv
 from datetime import datetime
+from pathlib import Path
 from typing import Callable, Dict, List
 
 from src.data_processing import measurement_callbacks
@@ -27,10 +29,8 @@ class DataStream:
         Create a new DataStream.
 
         :param name: The name associated with the DataStream. DataStreams should have unique names.
-        :param callback: The callback that the DataStream will execute whenever making a measurement.
-            Callbacks take no arguments and return a measurement value.
-        :param interval: The interval in seconds at which to sample. For example, interval=0.1 would
-            sample 10 times every second.
+        :param callback: The callback that the DataStream will execute whenever making a measurement. Callbacks take no arguments and return a measurement value.
+        :param interval: The interval in seconds at which to sample. For example, interval=0.1 would sample 10 times every second.
         """
         self.name = name
         self.callback = callback
@@ -97,6 +97,8 @@ class DataManager:
     """
 
     sources: Dict[str, DataStream]
+    stop_recording_event: asyncio.Event
+    recording_task: asyncio.Task
     queue: asyncio.Queue[core.Measurement]
 
     def __init__(self, sources: List[DataStream] = [], cache_size: int = 1000) -> None:
@@ -106,6 +108,7 @@ class DataManager:
         builtins = [
             DataStream(name="CPU", callback=measurement_callbacks.get_cpu, interval=0.1),
             DataStream(name="RAM", callback=measurement_callbacks.get_ram, interval=0.1),
+            DataStream(name="Thermal", callback=measurement_callbacks.get_cpu_temp, interval=5),
         ]
 
         for source in builtins:
@@ -114,7 +117,9 @@ class DataManager:
         # initialize the rest of the stuff
         for source in sources:
             self.sources[source.name] = source
+
         self.queue = asyncio.Queue(maxsize=cache_size)
+        self.stop_recording_event = asyncio.Event()
 
     def subscribe(self, stream: DataStream):
         """Register a new data stream with the Data Manager."""
@@ -145,3 +150,55 @@ class DataManager:
         """Remove a data stream from the Data Manager."""
         if stream := self.sources.pop(stream_name, None):
             await stream.stop()
+
+    def start_recording(self, sources: List[str], filepath: Path, interval: float = 1):
+        """Start recording data from a specified set of sources."""
+        if self.stop_recording_event.is_set():
+            self.stop_recording_event.clear()
+
+        self.recording_task = asyncio.create_task(self.record(sources, filepath, interval))
+
+    async def stop_recording(self):
+        """Stop data recording task."""
+        self.stop_recording_event.set()
+        await self.recording_task
+
+    async def record(self, sources: List, filepath: Path, interval: float):
+        """Record task."""
+        # gather up all the callbacks
+        callbacks = []
+        for source in sources:
+            if stream := self.sources.get(source):
+                callbacks.append(stream.callback)
+
+        # and add a timestamp column
+        sources.insert(0, "timestamp")
+
+        batch_size = 100
+        measurements = []
+
+        try:
+            with open(filepath, "w") as csvfile:
+                csvwriter = csv.writer(csvfile)
+                csvwriter.writerow(sources)
+
+                while not self.stop_recording_event.is_set():
+                    measurement_row = [datetime.now()]
+                    for callback in callbacks:
+                        measurement_row.append(callback())
+                    measurements.append(measurement_row)
+
+                    if len(measurements) >= batch_size:
+                        print("batching measurements")
+                        csvwriter.writerows(measurements)
+                        measurements.clear()
+
+                    await asyncio.sleep(interval)
+                csvfile.close()
+        finally:
+            with open(filepath, "a") as csvfile:
+                csvwriter = csv.writer(csvfile)
+                csvwriter.writerows(measurements)
+                csvfile.close()
+
+            print(f"finished recording at {filepath}")

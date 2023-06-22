@@ -95,7 +95,7 @@
                 <button
                     class="btn btn-error"
                     on:click={async () => {
-                        await apiCall(del('/project/', { body: $projectState }))
+                        await apiCall(del('/project', { body: $projectState }))
                         goto('/')
                     }}>Delete</button
                 >

@@ -1,6 +1,7 @@
 import LineChart from './LineChart.svelte'
 import ReactiveChart from './ReactiveChart.svelte'
 import SystemStatus from './SystemStatus.svelte'
+import RecordingStatus from './RecordingStatus.svelte'
 import type { SvelteComponent } from 'svelte'
 
 /**
@@ -9,5 +10,6 @@ import type { SvelteComponent } from 'svelte'
 export const componentRegistry: Record<string, typeof SvelteComponent> = {
     LineChart: LineChart,
     ReactiveChart: ReactiveChart,
-    SystemStatus: SystemStatus
+    SystemStatus: SystemStatus,
+    RecordingStatus: RecordingStatus
 }
