@@ -61,9 +61,13 @@ generate-api:
 lint-backend:
     -ruff backend/src
 
-# lint the frontend with... prettier and eslint.
+# lint the frontend with prettier, eslint, and typescript... I think.
 lint-frontend:
     -cd frontend && pnpm lint
+
+# see what packages on the frontend are outdated
+frontend-dependency-status:
+    -cd frontend && pnpm outdated
 
 # see if any new packages have been added to the env that are not in requirements.txt
 backend-dependency-diff:
@@ -72,8 +76,11 @@ backend-dependency-diff:
 # run a general health check on the backend
 check-backend-health: lint-backend backend-dependency-diff
 
+# run a general health check on the frontend
+check-frontend-health: lint-frontend frontend-dependency-status
+
 # run a general health check on the entire project
-check-health: lint-backend backend-dependency-diff lint-frontend
+check-health: check-backend-health check-frontend-health
 
 # remove old projects
 remove-projects:
