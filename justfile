@@ -19,11 +19,11 @@ setup-backend:
     backend/8900-env/bin/pip install -r backend/requirements.txt
 
 # start the frontend development server
-start-frontend:
+start-frontend: clear-environment
     cd frontend && pnpm run dev
 
 # start the backend development server
-start-backend:
+start-backend: clear-environment
     set PYTHONPATH $(pwd)
     cd backend && uvicorn src.main:app --reload
 
@@ -37,7 +37,7 @@ host-frontend:
     cd frontend && pnpm run dev --host
 
 # start both the frontend and backend servers exposed to the network in a tmux session
-host: stop
+host: stop setup-environment
     tmuxp load config/host.yaml
 
 # start both the frontend and backend development servers in a tmux session
