@@ -24,12 +24,10 @@ start-frontend: clear-environment
 
 # start the backend development server
 start-backend: clear-environment
-    set PYTHONPATH $(pwd)
     cd backend && uvicorn src.main:app --reload
 
 # start the backend development server and expose it on the network
 host-backend:
-    set PYTHONPATH $(pwd)
     cd backend && uvicorn src.main:app --host 0.0.0.0 --port 8000
 
 # start the frontend development server and expose it on the network
