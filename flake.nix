@@ -53,6 +53,10 @@
           shellHook = ''
             cd frontend && pnpm install && cd ..
             echo -e "\e[1;3;32mAE 8900 development environment active!\e[0m"
+            # this might introduce... side effects.
+            if [ -n "$IN_NIX_SHELL" ]; then
+                exec $SHELL
+            fi
           '';
 
         };

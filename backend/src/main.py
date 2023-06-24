@@ -17,6 +17,7 @@ origins = [
     "https://localhost",
 ]
 
+# basically add in the appropriate IP address if hosting
 settings = get_settings()
 
 if settings.host_ip is not None:
