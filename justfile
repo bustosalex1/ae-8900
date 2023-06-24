@@ -2,28 +2,20 @@
 set shell := ["bash", "-c"]
 
 # setup the environment, I don't know of a better way to do this right now
-setup-environment:
+_setup-environment:
     @read -p "Enter host IP address: " ip_address && \
     echo "PUBLIC_HOST_IP=$ip_address" > .env
 
-clear-environment:
+# clear the environment
+_clear-environment:
     echo "PUBLIC_HOST_IP=" > .env
 
-# setup the frontend
-setup-frontend:
-    cd frontend && pnpm install
-
-# setup the backend
-setup-backend:
-    cd backend && python -m venv 8900-env
-    backend/8900-env/bin/pip install -r backend/requirements.txt
-
 # start the frontend development server
-start-frontend: clear-environment
+start-frontend: _clear-environment
     cd frontend && pnpm run dev
 
 # start the backend development server
-start-backend: clear-environment
+start-backend: _clear-environment
     cd backend && uvicorn src.main:app --reload
 
 # start the backend development server and expose it on the network
@@ -35,7 +27,7 @@ host-frontend:
     cd frontend && pnpm run dev --host
 
 # start both the frontend and backend servers exposed to the network in a tmux session
-host: stop setup-environment
+host: stop _setup-environment
     tmuxp load config/host.yaml
 
 # start both the frontend and backend development servers in a tmux session
@@ -67,18 +59,8 @@ lint-frontend:
 frontend-dependency-status:
     -cd frontend && pnpm outdated
 
-# see if any new packages have been added to the env that are not in requirements.txt
-backend-dependency-diff:
-    -pip freeze | diff backend/requirements.txt -
-
-# run a general health check on the backend
-check-backend-health: lint-backend backend-dependency-diff
-
-# run a general health check on the frontend
-check-frontend-health: lint-frontend frontend-dependency-status
-
 # run a general health check on the entire project
-check-health: check-backend-health check-frontend-health
+check-health: lint-backend lint-frontend frontend-dependency-status
 
 # remove old projects
 remove-projects:

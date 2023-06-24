@@ -16,46 +16,46 @@
       ];
 
       # Helper to provide system-specific attributes
-      forAllSystems = f: nixpkgs.lib.genAttrs allSystems (system: f {
-        pkgs = import nixpkgs { inherit system; };
-      });
-    in
-    {
+      forAllSystems = f:
+        nixpkgs.lib.genAttrs allSystems
+        (system: f { pkgs = import nixpkgs { inherit system; }; });
+    in {
       # Development environment output
       devShells = forAllSystems ({ pkgs }: {
-        default =
-          let
-            # use Python 3.11
-            python = pkgs.python311;
-          in
-          pkgs.mkShell {
-            # the Nix packages provided in the environment
-            packages = [
-              # python and necessary packages
-              (python.withPackages (ps: with ps; [
+        default = let
+          # use Python 3.11
+          python = pkgs.python311;
+        in pkgs.mkShell {
+          # the Nix packages provided in the environment
+          packages = [
+            # python and necessary packages
+            (python.withPackages (ps:
+              with ps; [
                 pip
                 fastapi
                 psutil
                 websockets
                 uvicorn
+                python-dotenv
+                black
+                isort
               ]))
-              pkgs.ruff
-              pkgs.tmux
-              pkgs.tmuxp
-              pkgs.just
-              pkgs.nodejs_20
-              pkgs.nodePackages_latest.pnpm
-            ];
+            pkgs.nixfmt
+            pkgs.ruff
+            pkgs.tmux
+            pkgs.tmuxp
+            pkgs.just
+            pkgs.nodejs_20
+            pkgs.nodePackages_latest.pnpm
+            pkgs.fish
+          ];
 
-            shellHook = ''
+          shellHook = ''
             cd frontend && pnpm install && cd ..
             echo -e "\e[1;3;32mAE 8900 development environment active!\e[0m"
-            if [ -n "$IN_NIX_SHELL" ]; then
-                exec $SHELL
-            fi
-            '';
+          '';
 
-          };
+        };
       });
     };
 }
