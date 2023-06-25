@@ -47,7 +47,6 @@
             pkgs.just
             pkgs.nodejs_20
             pkgs.nodePackages_latest.pnpm
-            pkgs.fish
           ];
 
           shellHook = ''
