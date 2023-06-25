@@ -5,8 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, List
 
-from src.data_processing import measurement_callbacks
-from src.models import core
+from ae8900.data_processing import measurement_callbacks
+from ae8900.models import core
 
 
 class DataStream:

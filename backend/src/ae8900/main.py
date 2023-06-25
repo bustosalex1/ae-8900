@@ -3,8 +3,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.management.dependencies import get_settings
-from src.routers import crud, websocket
+from ae8900.management.dependencies import get_settings
+from ae8900.routers import crud, websocket
 
 app = FastAPI()
 app.include_router(crud.router)

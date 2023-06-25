@@ -16,7 +16,7 @@ start-frontend: _clear-environment
 
 # start the backend development server
 start-backend: _clear-environment
-    cd backend && uvicorn src.main:app --reload
+    cd backend/src && uvicorn ae8900.main:app --reload
 
 # start the backend development server and expose it on the network
 host-backend:

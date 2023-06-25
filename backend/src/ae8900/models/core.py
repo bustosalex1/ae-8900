@@ -1,7 +1,7 @@
 """Main Pydantic models for my AE-8900 Backend."""
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, BaseSettings, Field
 

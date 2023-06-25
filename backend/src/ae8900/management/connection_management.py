@@ -9,7 +9,7 @@ from typing import List
 
 from fastapi import WebSocket
 
-from src.data_processing.daq import DataManager
+from ae8900.data_processing.daq import DataManager
 
 
 class ConnectionManager:

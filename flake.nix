@@ -26,6 +26,7 @@
           # use Python 3.11
           python = pkgs.python311;
         in pkgs.mkShell {
+
           # the Nix packages provided in the environment
           packages = [
             # python and necessary packages
@@ -39,6 +40,7 @@
                 python-dotenv
                 black
                 isort
+                flit
               ]))
             pkgs.nixfmt
             pkgs.ruff

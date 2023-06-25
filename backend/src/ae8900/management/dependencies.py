@@ -1,12 +1,13 @@
 """Dependencies that can be used with FastAPI dependency injection for... safety or something."""
+import logging
 from typing import Annotated
 
 from fastapi import Depends
 
-from src.data_processing import daq
-from src.management import connection_management
-from src.management.project_management import BACKEND_DIR
-from src.models import core
+from ae8900.data_processing import daq
+from ae8900.management import connection_management
+from ae8900.management.project_management import BACKEND_DIR
+from ae8900.models import core
 
 # set up managers, which should only be initialized once for a backend instance.
 data_manager = daq.DataManager()
@@ -43,7 +44,7 @@ def get_settings() -> core.ProjectSettings:
     return project_settings
 
 
-print(get_settings())
+logging.warning((get_settings()))
 
 # cool type hinting, even with dependencies, apparently
 ConnectionManagerDependency = Annotated[connection_management.ConnectionManager, Depends(get_connection_manager)]

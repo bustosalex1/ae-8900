@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from src.models import core
+from ae8900.models import core
 
 # constant directories
 BACKEND_DIR = Path(__file__).parent.parent.parent

@@ -6,9 +6,9 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
                                    ConnectionClosedOK)
 
-from src.management.dependencies import (ConnectionManagerDependency,
-                                         DataManagerDependency)
-from src.models import core
+from ae8900.management.dependencies import (ConnectionManagerDependency,
+                                            DataManagerDependency)
+from ae8900.models import core
 
 router = APIRouter()
 

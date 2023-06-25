@@ -9,10 +9,10 @@ from typing import List
 import yaml
 from fastapi import APIRouter, HTTPException
 
-from src.management import project_management, utils
-from src.management.dependencies import (DataManagerDependency,
-                                         ProjectSettingsDependency)
-from src.models import core
+from ae8900.management import project_management, utils
+from ae8900.management.dependencies import (DataManagerDependency,
+                                            ProjectSettingsDependency)
+from ae8900.models import core
 
 router = APIRouter()
 
