@@ -8,7 +8,7 @@ import yaml
 from ae8900.models import core
 
 # constant directories
-BACKEND_DIR = Path(__file__).parent.parent.parent
+BACKEND_DIR = Path(__file__).parent.parent.parent.parent
 PROJECTS_DIR = BACKEND_DIR / "projects"
 SRC_DIR = BACKEND_DIR / "src"
 
