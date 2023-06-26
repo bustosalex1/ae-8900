@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { fly, slide } from 'svelte/transition'
+    import { slide } from 'svelte/transition'
     import Icon from '../general/Icon.svelte'
     import GeneralSettings from '../dashboard/settings/GeneralSettings.svelte'
-    import type { ComponentConfiguration } from '$lib/api'
+    import type { ComponentConfiguration, PanelConfiguration } from '$lib/api'
 
     // props
     export let componentConfiguration: ComponentConfiguration
+    export let panelConfiguration: PanelConfiguration
 
     // component state
     let settings = false
@@ -18,8 +19,8 @@
 </script>
 
 <div class="w-full rounded-md ring-1 ring-neutral-400 p-2 shadow-md">
-    <div class="w-full flex flex-row items-center gap-1">
-        <button class="w-full text-left flex flex-row" on:click={toggle}>
+    <div class="w-full flex flex-row gap-1">
+        <button class="w-full text-left flex flex-row items-center" on:click={toggle}>
             <input
                 type="text"
                 class="font-bold bg-transparent"
@@ -28,21 +29,35 @@
                 on:keyup|preventDefault
             />
         </button>
-        {#if componentConfiguration.expanded}
-            <div class="tooltip tooltip-left tooltip-primary z-50" data-tip="Edit">
-                {#if componentConfiguration.settings}
-                    <button
-                        transition:fly|local={{ x: 10, duration: 500 }}
-                        on:click={() => (settings = !settings)}
-                    >
-                        <Icon name="edit" class="feather" />
-                    </button>
-                {/if}
-            </div>
-        {/if}
-        <button on:click={toggle}>
-            <Icon name={componentConfiguration.expanded ? 'chevron-up' : 'chevron-down'} />
-        </button>
+
+        <div class="flex flex-row gap-1 items-center">
+            {#if componentConfiguration.expanded}
+                <button
+                    class="btn btn-xs btn-circle btn-ghost"
+                    transition:slide={{ axis: 'x', duration: 500 }}
+                    on:click={() => {
+                        const index = panelConfiguration.components.indexOf(componentConfiguration)
+
+                        if (index > -1) {
+                            panelConfiguration.components.splice(index, 1)
+                            panelConfiguration = panelConfiguration
+                        }
+                    }}
+                >
+                    <Icon name="x" class="feather" />
+                </button>
+                <button
+                    class="btn btn-xs btn-circle btn-ghost"
+                    transition:slide={{ axis: 'x', duration: 500 }}
+                    on:click={() => (settings = !settings)}
+                >
+                    <Icon name="edit" class="feather" />
+                </button>
+            {/if}
+            <button on:click={toggle} class="btn btn-xs btn-circle btn-ghost">
+                <Icon name={componentConfiguration.expanded ? 'chevron-up' : 'chevron-down'} />
+            </button>
+        </div>
     </div>
     {#if componentConfiguration.expanded && !settings}
         <div transition:slide|local={{ duration: 500 }}>

@@ -1,14 +1,18 @@
 # bash only
 set shell := ["bash", "-c"]
 
+_stamp:
+    echo "PUBLIC_COMMIT_HASH=$(git rev-parse --short HEAD)" > .env
+    echo "PUBLIC_VERSION"=$(git branch --show-current) >> .env
+
 # setup the environment, I don't know of a better way to do this right now
-_setup-environment:
+_setup-environment: _stamp
     @read -p "Enter host IP address: " ip_address && \
-    echo "PUBLIC_HOST_IP=$ip_address" > .env
+    echo "PUBLIC_HOST_IP=$ip_address" >> .env
 
 # clear the environment
-_clear-environment:
-    echo "PUBLIC_HOST_IP=" > .env
+_clear-environment: _stamp
+    echo "PUBLIC_HOST_IP=" >> .env
 
 # start the frontend development server
 start-frontend: _clear-environment

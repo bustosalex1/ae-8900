@@ -6,6 +6,7 @@
     import { fly } from 'svelte/transition'
     import { stagedState } from '$lib/stores'
     import { componentRegistry } from '../dashboard'
+    import { flip } from 'svelte/animate'
 
     // each panel gets passed a configuration
     export let configuration: PanelConfiguration
@@ -50,9 +51,9 @@
     </div>
 </div>
 <div class="flex flex-col gap-2 h-screen overflow-y-scroll overflow-x-hidden p-2 pb-20">
-    {#each configuration.components as componentConfiguration}
-        <div in:fly={{ y: -10, duration: 350 }}>
-            <DashboardComponent {componentConfiguration}>
+    {#each configuration.components as componentConfiguration (componentConfiguration)}
+        <div in:fly={{ y: -10, duration: 350 }} animate:flip={{ duration: 350 }}>
+            <DashboardComponent {componentConfiguration} bind:panelConfiguration={configuration}>
                 <svelte:component
                     this={componentRegistry[componentConfiguration.component]}
                     settings={componentConfiguration.settings}
