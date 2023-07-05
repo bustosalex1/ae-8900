@@ -1,15 +1,17 @@
-"""Main Pydantic models for my AE-8900 Backend."""
+"""Core Pydantic models for my AE8900 Backend."""
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
 from pydantic import BaseModel, BaseSettings, Field
 
+from ae8900.models import websocket
+
 
 class ComponentSettings(BaseModel):
     """Defines generic settings for a single dashboard component."""
 
-    data_sources: List[str]
+    data_sources: List[websocket.MessageConfiguration]
 
 
 class ComponentConfiguration(BaseModel):
@@ -55,22 +57,22 @@ class ProjectState(BaseModel):
     metadata: Optional[ProjectMetadata]
 
 
-class Measurement(BaseModel):
-    """Defines a single measurement value taken at a particular time."""
+class Settings(BaseSettings):
+    """Settings that are generally useful across the backend."""
 
-    name: str
-    value: float | int
-    units: str | None
-    timestamp: datetime
-
-    class Config:
-        """Config options for the Measurement model."""
-
-        json_encoders = {datetime: lambda value: value.isoformat()}
-
-
-class ProjectSettings(BaseSettings):
-    """Project wide backend settings."""
-
+    # the absolute path of the project that is currently active on the frontend
     active_project_directory: Path | None
+
+    # this comes from an environment variable... for now. If none, the server is deployed to
+    # localhost. If it is some value, the server is deployed to that IP instead.
     host_ip: str | None = Field(default=None, env="PUBLIC_HOST_IP")
+
+    # whether or not the system is recording
+    recording: bool
+
+
+class RecordingRequest(BaseModel):
+    """Request parameters for a new recording."""
+
+    sources: List[str]
+    interval: float

@@ -4,11 +4,12 @@
     import type { ComponentSettings } from '$lib/api'
     import { ComponentDataManager } from '$lib/websocket/connectionManager'
 
-    // comply with dashboard standard
+    // comply with dashboard "standard"
     export let settings: ComponentSettings
 
     // data manager manages subscriptions dynamic websocket streams
-    const dataManager = new ComponentDataManager([])
+    // the reason I am doing this right now is because I've realized that I'm unmounting and remounting the component every time I change the settings lol.
+    const dataManager = new ComponentDataManager(settings.data_sources)
     $: dataManager.onSourceChange(settings.data_sources)
 
     /** ECharts stuff */
@@ -21,14 +22,15 @@
 
     /** sort of nice way to dynamically get websocket updates to ECharts */
     dataManager.updateCallback = (dataMap) => {
+        const fields = dataManager.getActiveFields()
         myChart &&
             !userInteracting &&
             myChart.setOption({
-                series: Array.from(dataMap.entries()).map(([key, value]) => {
+                series: fields.map(([key, value]) => {
                     return {
                         name: key,
                         type: 'line',
-                        data: value,
+                        data: value.map((field) => [field.timestamp, field.value]),
                         symbol: 'none',
                         showSymbol: false
                     }

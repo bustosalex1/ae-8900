@@ -1,4 +1,11 @@
-import { apiCall, get, type Measurement } from '$lib/api'
+import {
+    apiCall,
+    get,
+    type Field,
+    type Message,
+    type RawMessage,
+    type MessageConfiguration
+} from '$lib/api'
 import { PUBLIC_HOST_IP } from '$env/static/public'
 import type { Unsubscriber, Writable } from 'svelte/store'
 import { createMeasurementStore } from '$lib/stores'
@@ -11,7 +18,7 @@ import { createMeasurementStore } from '$lib/stores'
  */
 class ConnectionManager {
     private websocket: WebSocket
-    public measurementQueues: Map<string, Writable<Measurement[]>>
+    public messageQueues: Map<string, Writable<Map<string, Field[]>>>
     public cacheSize: number
 
     /**
@@ -23,31 +30,56 @@ class ConnectionManager {
     constructor(url: string, cacheSize: number) {
         this.websocket = new WebSocket(url)
         this.cacheSize = cacheSize
-        this.measurementQueues = new Map<string, Writable<Measurement[]>>()
+        this.messageQueues = new Map<string, Writable<Map<string, Field[]>>>()
 
         // setup the callback to handle new messages as they arrive
         this.websocket.onmessage = (event: MessageEvent<string>) => {
-            const message = JSON.parse(event.data)
-            const eChartsMessage: Measurement = [new Date(message.timestamp), message.value]
+            // first parse out the message from the JSON
+            const rawMessage: RawMessage = JSON.parse(event.data)
 
-            if (!this.measurementQueues.has(message.name)) {
-                this.measurementQueues.set(message.name, createMeasurementStore(message.name))
+            // then parse out the date in this... pretty ugly way
+            const message: Message = {
+                ...rawMessage,
+                header: { ...rawMessage.header, timestamp: new Date(rawMessage.header.timestamp) }
             }
 
-            this.measurementQueues.get(message.name)?.update((queue: Measurement[]) => {
-                if (queue.length >= 1) {
-                    if (Date.now() - queue[0][0].valueOf() > this.cacheSize) {
-                        queue.shift()
+            // if a store for this type of message does not already exist in the connection manager, create a new one.
+            if (!this.messageQueues.has(message.header.name)) {
+                this.messageQueues.set(message.header.name, createMeasurementStore(message))
+            }
+
+            // then split up the message into its component fields and add them into the appropriate areas.
+            this.messageQueues
+                .get(message.header.name)
+                ?.update((queueMap: Map<string, Field[]>) => {
+                    // basically, iterate over each field in the message payload...
+                    for (const field of message.payload) {
+                        const queue = queueMap.get(field.name)
+
+                        // ... and for each field queue, check if the queue should get shortened...
+                        if (queue) {
+                            if (
+                                queue.length >= 1 &&
+                                Date.now() - queue[0].timestamp.valueOf() > this.cacheSize
+                            ) {
+                                queue.shift()
+                            }
+
+                            //... and then finally append the new field to the queue.
+                            queue.push({ ...field, timestamp: message.header.timestamp })
+                        } else {
+                            // this is necessary if you (meaning me) want to clear out queues when there are no more subscribers.
+                            queueMap.set(field.name, [])
+                        }
                     }
-                }
-                queue.push(eChartsMessage)
-                return queue
-            })
+
+                    return queueMap
+                })
         }
     }
 
     getMeasurementStream(name: string) {
-        return this.measurementQueues.get(name)
+        return this.messageQueues.get(name)
     }
 
     /** Create measurement stores for all data sources provided by the backend. */
@@ -56,14 +88,16 @@ class ConnectionManager {
 
         if (sources) {
             for (const source of sources) {
-                this.measurementQueues.set(source, createMeasurementStore(source))
+                this.messageQueues.set(source.header.name, createMeasurementStore(source))
             }
         }
     }
 
     /** Get a list of all the available data sources provided by the backend */
-    sources() {
-        return [...this.measurementQueues.keys()]
+    async sources() {
+        const sources = await apiCall(get('/data_sources', {}))
+
+        return sources
     }
 }
 
@@ -80,23 +114,36 @@ await connectionManager.syncSources()
  * component. It also prevents duplicate sources from being troublesome.
  */
 export class ComponentDataManager {
-    sources: string[]
-    unsubscribers: Map<string, Unsubscriber>
-    dataMap: Map<string, Measurement[]>
-    updateCallback: ((dataMap: Map<string, Measurement[]>) => void) | undefined
-    constructor(sources: string[]) {
-        this.sources = [...new Set(sources)]
+    // a list of all the string keys that correspond to DataStreams
+    public sources: MessageConfiguration[]
+
+    // a map of Unsubscriber objects, so that sources can be manually unsubscribed from when the map is updated
+    private unsubscribers: Map<string, Unsubscriber>
+
+    // uhhhh ummm
+    public dataMap: Map<string, Map<string, Field[]>>
+
+    // user definable ummmmm
+    public updateCallback: ((dataMap: Map<string, Map<string, Field[]>>) => void) | undefined
+
+    constructor(sources: MessageConfiguration[]) {
+        this.sources = sources
         this.unsubscribers = new Map<string, Unsubscriber>()
-        this.dataMap = new Map<string, Measurement[]>()
+        this.dataMap = new Map<string, Map<string, Field[]>>()
+        this.onSourceChange(this.sources)
     }
 
-    onSourceChange(sources: string[]) {
+    onSourceChange(sources: MessageConfiguration[]) {
         // remove duplicates
         this.sources = [...new Set(sources)]
 
         // unsubscribe from any sources that have been removed
         this.unsubscribers.forEach((unsubscribe: Unsubscriber, source) => {
-            if (!this.sources.includes(source)) {
+            if (
+                !this.sources.find(
+                    (MessageConfiguration) => MessageConfiguration.header.name === source
+                )
+            ) {
                 unsubscribe()
                 this.unsubscribers.delete(source)
                 this.dataMap.delete(source)
@@ -104,19 +151,42 @@ export class ComponentDataManager {
         })
 
         // subscribe to any new sources
-        sources.forEach((source) => {
-            if (!this.unsubscribers.has(source)) {
-                const store = connectionManager.getMeasurementStream(source)
+        for (const source of sources) {
+            // if the source is not already registered...
+            if (!this.unsubscribers.has(source.header.name)) {
+                // ... get it from the connection manager
+                const store = connectionManager.getMeasurementStream(source.header.name)
+                console.log('trying to subscribe to ', store)
                 if (store) {
                     const unsubscribe = store.subscribe((data) => {
-                        this.dataMap.set(source, data)
+                        this.dataMap.set(source.header.name, data)
                         this.updateCallback && this.updateCallback(this.dataMap)
                     })
 
-                    this.unsubscribers.set(source, unsubscribe)
+                    this.unsubscribers.set(source.header.name, unsubscribe)
                 }
             }
-        })
+        }
+    }
+
+    // this is moderately cursed
+    getActiveFields() {
+        const fields: [string, Field[]][] = []
+        for (const [messageName, messageFields] of this.dataMap) {
+            const messageConfig = this.sources.find((source) => source.header.name === messageName)
+            for (const [fieldName, fieldList] of messageFields) {
+                if (messageConfig) {
+                    const fieldConfig = messageConfig.payload.find(
+                        (field) => field.name === fieldName
+                    )
+
+                    if (fieldConfig && fieldConfig.enabled) {
+                        fields.push([`${messageName}: ${fieldName}`, fieldList])
+                    }
+                }
+            }
+        }
+        return fields
     }
 
     destroy() {

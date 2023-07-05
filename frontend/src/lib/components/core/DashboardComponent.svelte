@@ -18,7 +18,7 @@
     }
 </script>
 
-<div class="w-full rounded-md ring-1 ring-neutral-400 p-2 shadow-md">
+<div class="w-full rounded-md ring-1 ring-base-200 p-2 shadow-md">
     <div class="w-full flex flex-row gap-1">
         <button class="w-full text-left flex flex-row items-center" on:click={toggle}>
             <input
@@ -44,14 +44,14 @@
                         }
                     }}
                 >
-                    <Icon name="x" class="feather" />
+                    <Icon name="x" />
                 </button>
                 <button
                     class="btn btn-xs btn-circle btn-ghost"
                     transition:slide={{ axis: 'x', duration: 500 }}
                     on:click={() => (settings = !settings)}
                 >
-                    <Icon name="edit" class="feather" />
+                    <Icon name="edit" />
                 </button>
             {/if}
             <button on:click={toggle} class="btn btn-xs btn-circle btn-ghost">

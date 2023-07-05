@@ -1,5 +1,6 @@
 """Create, Read, Update, Delete (CRUD) endpoints for my AE 8900 backend API."""
 import glob
+import logging
 import os
 import shutil
 from datetime import datetime
@@ -9,12 +10,13 @@ from typing import List
 import yaml
 from fastapi import APIRouter, HTTPException
 
-from ae8900.management import project_management, utils
-from ae8900.management.dependencies import (DataManagerDependency,
-                                            ProjectSettingsDependency)
+from ae8900.infrastructure import project_management, utils
+from ae8900.infrastructure.dependencies import (DataManagerDependency,
+                                                ProjectSettingsDependency)
 from ae8900.models import core
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.get("/projects")
@@ -43,7 +45,8 @@ async def get_projects() -> List[core.ProjectState]:
 @router.post("/active_project")
 async def set_active_project(active_project_config: str, project_settings: ProjectSettingsDependency) -> None:
     """Set the active project in the backend."""
-    print(f"setting active project to {Path(active_project_config).parent}")
+    logger.info(f"setting active project to {Path(active_project_config).parent}")
+
     project_settings.active_project_directory = Path(active_project_config).parent
 
 
@@ -123,15 +126,19 @@ async def delete_project(state: core.ProjectState) -> None:
 
 
 @router.post("/start_recording")
-async def start_recording(sources: List[str], interval: float, data_manager: DataManagerDependency, project_settings: ProjectSettingsDependency) -> None:
+async def start_recording(
+    request: core.RecordingRequest,
+    data_manager: DataManagerDependency,
+    project_settings: ProjectSettingsDependency,
+) -> None:
     """
     Start recording data.
 
     I think.
     """
     if project_settings.active_project_directory:
-        filepath = project_settings.active_project_directory / f"{datetime.now()}.csv"
-        data_manager.start_recording(sources=sources, filepath=filepath, interval=interval)
+        filepath = project_settings.active_project_directory / "data" / f"{datetime.now()}.csv"
+        data_manager.start_recording(sources=request.sources, filepath=filepath, interval=request.interval)
     else:
         raise HTTPException(
             status_code=400,
@@ -142,7 +149,7 @@ async def start_recording(sources: List[str], interval: float, data_manager: Dat
 @router.post("/stop_recording")
 async def stop_recording(data_manager: DataManagerDependency) -> None:
     """
-    Start recording data.
+    Stop recording data.
 
     I think.
     """

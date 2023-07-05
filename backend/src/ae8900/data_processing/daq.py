@@ -1,12 +1,15 @@
-"""Data acquisition for my AE 8900 backend."""
+"""Data acquisition tools for my AE 8900 backend."""
 import asyncio
 import csv
+import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, List
 
 from ae8900.data_processing import measurement_callbacks
-from ae8900.models import core
+from ae8900.models import core, websocket
+
+logger = logging.getLogger(__name__)
 
 
 class DataStream:
@@ -16,13 +19,13 @@ class DataStream:
     Basically, a DataStream will query this data source asynchronously at a certain frequency,
     which can be specified for any particular DataStream, and then pass measurements into a Queue
     in the DataManager. Measurements in the DataManager queue are then made available to all other
-    parts of the backend.
+    parts of the application.
     """
 
     def __init__(
         self,
         name: str,
-        callback: Callable[[], float | int],
+        callback: Callable[[], List[websocket.PayloadField]],
         interval: float,
     ):
         """
@@ -35,9 +38,10 @@ class DataStream:
         self.name = name
         self.callback = callback
         self.interval = interval
-        self.stop_event = asyncio.Event()
-        self.task: asyncio.Task | None = None
-        pass
+        self._stop_event = asyncio.Event()
+        self._task: asyncio.Task | None = None
+
+        logger.info(f"Initialized DataStream: {name}")
 
     async def measure(self, queue: asyncio.Queue):
         """
@@ -48,14 +52,16 @@ class DataStream:
 
         :param queue: The DataManager queue, where the measurement will be placed.
         """
-        while not self.stop_event.is_set():
-            measurement = core.Measurement(
-                name=self.name,
-                timestamp=datetime.now(),
-                value=self.callback(),
+        while not self._stop_event.is_set():
+            message = websocket.Message(
+                header=websocket.Header(
+                    name=self.name,
+                    timestamp=datetime.now(),
+                ),
+                payload=self.callback(),
             )
 
-            await queue.put(measurement)
+            await queue.put(message)
             await asyncio.sleep(self.interval)
 
     def start(self, queue: asyncio.Queue) -> None:
@@ -68,9 +74,11 @@ class DataStream:
 
         :param queue: The DataManager's queue to pass through to measure()
         """
-        if self.task is None:
-            self.stop_event.clear()
-            self.task = asyncio.create_task(self.measure(queue))
+        if self._task is None:
+            self._stop_event.clear()
+            self._task = asyncio.create_task(self.measure(queue))
+
+        logger.info(f"Started {self.name} measurement coroutine.")
 
     async def stop(self) -> None:
         """
@@ -79,10 +87,11 @@ class DataStream:
         This will set the stop event for the DataStream, and then wait for the task to wrap up, and
         finally discard the task.
         """
-        self.stop_event.set()
-        if self.task:
-            await self.task
-        self.task = None
+        self._stop_event.set()
+        if self._task:
+            await self._task
+        self._task = None
+        logger.info(f"Stopped {self.name} measurement coroutine.")
 
 
 class DataManager:
@@ -99,9 +108,11 @@ class DataManager:
     sources: Dict[str, DataStream]
     stop_recording_event: asyncio.Event
     recording_task: asyncio.Task
-    queue: asyncio.Queue[core.Measurement]
+    notify_task: asyncio.Task
+    stop_notify_event: asyncio.Event
+    queue: asyncio.Queue[websocket.Message]
 
-    def __init__(self, sources: List[DataStream] = [], cache_size: int = 1000) -> None:
+    def __init__(self, state: core.Settings, sources: List[DataStream] = [], cache_size: int = 1000) -> None:
         """Create a new DataManager instance."""
         # initialize builtin sources
         self.sources = {}
@@ -109,6 +120,7 @@ class DataManager:
             DataStream(name="CPU", callback=measurement_callbacks.get_cpu, interval=0.1),
             DataStream(name="RAM", callback=measurement_callbacks.get_ram, interval=0.1),
             DataStream(name="Thermal", callback=measurement_callbacks.get_cpu_temp, interval=5),
+            DataStream(name="System", callback=measurement_callbacks.get_system_status, interval=0.1),
         ]
 
         for source in builtins:
@@ -120,12 +132,17 @@ class DataManager:
 
         self.queue = asyncio.Queue(maxsize=cache_size)
         self.stop_recording_event = asyncio.Event()
+        self.stop_notify_event = asyncio.Event()
 
     def subscribe(self, stream: DataStream):
         """Register a new data stream with the Data Manager."""
         if not self.sources.get(stream.name):
             self.sources[stream.name] = stream
-            stream.start(queue=self.queue)
+
+    async def unsubscribe(self, stream_name: str):
+        """Remove a data stream from the Data Manager."""
+        if stream := self.sources.pop(stream_name, None):
+            await stream.stop()
 
     def start_stream(self, stream_name: str) -> None:
         """
@@ -144,28 +161,70 @@ class DataManager:
         """
         if stream := self.sources.get(stream_name):
             await stream.stop()
-            print(f"successfully stopped stream: {stream_name}")
-
-    async def unsubscribe(self, stream_name: str):
-        """Remove a data stream from the Data Manager."""
-        if stream := self.sources.pop(stream_name, None):
-            await stream.stop()
 
     def start_recording(self, sources: List[str], filepath: Path, interval: float = 1):
         """Start recording data from a specified set of sources."""
         if self.stop_recording_event.is_set():
             self.stop_recording_event.clear()
 
+        if self.stop_notify_event.is_set():
+            self.stop_notify_event.clear()
+
         self.recording_task = asyncio.create_task(self.record(sources, filepath, interval))
+        self.notify_task = asyncio.create_task(self.notify())
 
     async def stop_recording(self):
         """Stop data recording task."""
         self.stop_recording_event.set()
+        self.stop_notify_event.set()
         await self.recording_task
+        await self.notify_task
+        await self.queue.put(
+            websocket.Message(
+                header=websocket.Header(
+                    name="System",
+                    timestamp=datetime.now(),
+                ),
+                payload=[
+                    websocket.PayloadField(
+                        name="recording",
+                        value=0,
+                    ),
+                ],
+            )
+        )
 
-    async def record(self, sources: List, filepath: Path, interval: float):
-        """Record task."""
-        # gather up all the callbacks
+    async def notify(self) -> None:
+        """Send DAQ status messages to the ConnectionManager queue."""
+        while not self.stop_notify_event.is_set():
+            await self.queue.put(
+                websocket.Message(
+                    header=websocket.Header(
+                        name="System",
+                        timestamp=datetime.now(),
+                    ),
+                    payload=[
+                        websocket.PayloadField(
+                            name="recording",
+                            value=1,
+                        ),
+                    ],
+                )
+            )
+            await asyncio.sleep(1)
+
+    async def record(self, sources: List[str], filepath: Path, interval: float, batch_size: int = 100):
+        """
+        Asynchronous recording task.
+
+        Basically, when you call this with asyncio.create_task, this will kick of a coroutine that
+        takes measurements from the sources specified (the sources correspond to DataStream keys),
+        at the interval specified (in seconds) and collect those measurements. Every time the
+        coroutine collects batch_size measurements, it will write them to a CSV file at filepath.
+        When the coroutine is called to stop, any remaining measurements will be written to the file
+        and the file will be closed.
+        """
+        # gather up all the callbacks for the sources specified
         callbacks = []
         for source in sources:
             if stream := self.sources.get(source):
@@ -174,9 +233,9 @@ class DataManager:
         # and add a timestamp column
         sources.insert(0, "timestamp")
 
-        batch_size = 100
         measurements = []
 
+        # basically ensure with try/finally that the coroutine always cleans up and writes the file.
         try:
             with open(filepath, "w") as csvfile:
                 csvwriter = csv.writer(csvfile)
@@ -189,7 +248,6 @@ class DataManager:
                     measurements.append(measurement_row)
 
                     if len(measurements) >= batch_size:
-                        print("batching measurements")
                         csvwriter.writerows(measurements)
                         measurements.clear()
 
@@ -200,5 +258,3 @@ class DataManager:
                 csvwriter = csv.writer(csvfile)
                 csvwriter.writerows(measurements)
                 csvfile.close()
-
-            print(f"finished recording at {filepath}")

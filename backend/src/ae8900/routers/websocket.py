@@ -1,4 +1,4 @@
-"""Websocket endpoints for my AE 8900 backend API."""
+"""Endpoints that are mostly relevant to websockets for my AE 8900 backend."""
 from datetime import datetime
 from typing import List
 
@@ -6,24 +6,47 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
                                    ConnectionClosedOK)
 
-from ae8900.management.dependencies import (ConnectionManagerDependency,
-                                            DataManagerDependency)
-from ae8900.models import core
+from ae8900.infrastructure.dependencies import (ConnectionManagerDependency,
+                                                DataManagerDependency)
+from ae8900.models import websocket
 
 router = APIRouter()
 
 
 @router.get("/websocket_types")
-def websocket_types() -> core.Measurement:
+def websocket_types() -> websocket.Message:
     """Just an endpoint so that the Measurement type will show up in the openapi.json."""
-    return core.Measurement(name="sample", value=0, timestamp=datetime.now())
+    pass
 
 
 @router.get("/data_sources")
-def data_sources(data_manager: DataManagerDependency) -> List[str]:
-    """Get the available DataStreams."""
-    print(data_manager.sources)
-    return list(data_manager.sources.keys())
+def data_sources(data_manager: DataManagerDependency) -> List[websocket.MessageConfiguration]:
+    """
+    Get the available data streams and their component fields.
+
+    In order to accomplish this, I am executing each data stream's callback once, which... I feel
+    like has the potential to be problematic in the future. Perhaps something to revisit.
+    """
+    sources: List[websocket.MessageConfiguration] = []
+    for source, stream in data_manager.sources.items():
+        sources.append(
+            websocket.MessageConfiguration(
+                header=websocket.Header(
+                    name=source,
+                    timestamp=datetime.now(),
+                ),
+                payload=[
+                    websocket.FieldConfiguration(
+                        name=field.name,
+                        units=field.units,
+                        enabled=False,
+                    )
+                    for field in stream.callback()
+                ],
+            )
+        )
+
+    return sources
 
 
 @router.put("/start_stream/{stream_name}")

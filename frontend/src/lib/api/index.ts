@@ -34,11 +34,31 @@ export type ProjectConfiguration = components['schemas']['ProjectConfiguration']
 export type ProjectMetadata = components['schemas']['ProjectMetadata']
 export type ComponentConfiguration = components['schemas']['ComponentConfiguration']
 export type ComponentSettings = components['schemas']['ComponentSettings']
-
 export type PanelConfiguration = components['schemas']['PanelConfiguration']
 export type ProjectState = components['schemas']['ProjectState']
+export type Field = {
+    name: string
+    value: number
+    units?: string | undefined
+    timestamp: Date
+}
+export type FieldConfiguration = components['schemas']['FieldConfiguration']
+export type MessageConfiguration = components['schemas']['MessageConfiguration']
 
-export type Measurement = [Date, number]
+/**
+ * I can feel this getting convoluted, so for my own sake, a RawMessage is one that is parsed
+ * straight from JSON -- i.e., it only contains JSON serializable objects, no Dates or anything.
+ */
+export type RawMessage = components['schemas']['Message']
+export type Header = Omit<components['schemas']['Header'], 'timestamp'> & { timestamp: Date }
+
+/**
+ * A Message, in contrast to a RawMessage, is basically a RawMessage that has been parsed into more
+ * usable information. Right now that just entails converting the timestamp from an ISO8601 string
+ * to a Date.
+ */
+export type Message = Omit<RawMessage, 'header'> & { header: Header }
+
 export type KeyFilter<T, U> = {
     [K in keyof T]: T[K] extends U ? K : never
 }[keyof T]

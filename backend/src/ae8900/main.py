@@ -1,11 +1,11 @@
 """Entrypoint into my AE 8900 backend."""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ae8900.management.dependencies import get_settings
+from ae8900.infrastructure.dependencies import get_settings
 from ae8900.routers import crud, websocket
 
+# FastAPI setup
 app = FastAPI()
 app.include_router(crud.router)
 app.include_router(websocket.router)
