@@ -23,6 +23,18 @@
       # Development environment output
       devShells = forAllSystems ({ pkgs }: {
         default = let
+          daqhats = pkgs.python3Packages.buildPythonPackage {
+            name = "daqhats";
+            version = "1.4.0.4";
+            src = pkgs.fetchFromGitHub {
+              owner = "mccdaq";
+              repo = "daqhats";
+              rev = "e6d96c8fb621c83696536a037f1c4fa373c46068";
+              sha256 = "7+KEbyvmHCsT9O90V2mGDe6OWU8sQmVph5BHN9e4xj0=";
+            };
+            doCheck = false;
+
+          };
           # use Python 3.11
           python = pkgs.python311;
         in pkgs.mkShell {
@@ -42,6 +54,7 @@
                 isort
                 flit
               ]))
+            daqhats
             pkgs.nixfmt
             pkgs.ruff
             pkgs.tmux
