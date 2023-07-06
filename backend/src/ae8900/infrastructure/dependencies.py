@@ -26,7 +26,7 @@ _project_settings = core.Settings(
 # sort of instances that are kind of passed around and widely used in the codebase, but I also feel
 # like I am not smart enough to fix these right now. For now this works, but it is probably worth
 # revisiting in the future.
-_data_manager = daq.DataManager(state=_project_settings)
+_data_manager = daq.DataManager(system_state=_project_settings)
 
 # is this... dependency injection?
 _connection_manager = connection_management.ConnectionManager(data_manager=_data_manager)

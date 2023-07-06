@@ -4,6 +4,7 @@ from typing import Callable, List
 import daqhats
 import psutil
 
+from ae8900.models import core
 from ae8900.models.websocket import PayloadField
 
 
@@ -54,26 +55,34 @@ def get_cpu_temp() -> List[PayloadField]:
     return payload
 
 
-def get_system_status() -> List[PayloadField]:
-    """
-    Get system parameters.
+def get_system_status(settings: core.Settings) -> Callable[[], List[PayloadField]]:
+    def callback() -> List[PayloadField]:
+        """
+        Get system parameters.
 
-    Basically a test to demonstrate new multi-field capabilities.
-    """
-    payload = [
-        PayloadField(
-            name="CPU",
-            value=psutil.cpu_percent(),
-            units="%",
-        ),
-        PayloadField(
-            name="RAM",
-            value=psutil.virtual_memory().percent,
-            units="%",
-        ),
-    ]
+        Basically a test to demonstrate new multi-field capabilities.
+        """
+        payload = [
+            PayloadField(
+                name="CPU",
+                value=psutil.cpu_percent(),
+                units="%",
+            ),
+            PayloadField(
+                name="RAM",
+                value=psutil.virtual_memory().percent,
+                units="%",
+            ),
+            PayloadField(
+                name="Recording",
+                value=int(settings.recording),
+                units=None,
+            ),
+        ]
 
-    return payload
+        return payload
+
+    return callback
 
 
 def get_daq_channel(board: daqhats.mcc118, channel: int = 0) -> Callable[[], List[PayloadField]]:

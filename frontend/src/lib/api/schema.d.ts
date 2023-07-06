@@ -248,7 +248,7 @@ export interface components {
          */
         RecordingRequest: {
             /** Sources */
-            sources: string[]
+            sources: components['schemas']['MessageConfiguration'][]
             /** Interval */
             interval: number
         }

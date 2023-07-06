@@ -74,5 +74,5 @@ class Settings(BaseSettings):
 class RecordingRequest(BaseModel):
     """Request parameters for a new recording."""
 
-    sources: List[str]
+    sources: List[websocket.MessageConfiguration]
     interval: float

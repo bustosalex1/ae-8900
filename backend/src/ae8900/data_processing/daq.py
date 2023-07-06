@@ -111,25 +111,26 @@ class DataManager:
     sources: Dict[str, DataStream]
     stop_recording_event: asyncio.Event
     recording_task: asyncio.Task
-    notify_task: asyncio.Task
-    stop_notify_event: asyncio.Event
     queue: asyncio.Queue[websocket.Message]
 
-    def __init__(self, state: core.Settings, sources: List[DataStream] = [], cache_size: int = 1000) -> None:
+    def __init__(self, system_state: core.Settings, sources: List[DataStream] = [], cache_size: int = 1000) -> None:
         """Create a new DataManager instance."""
+        # assign state dependency
+        self.system_state = system_state
+
         # initialize builtin sources
         self.sources = {}
         builtins = [
             DataStream(name="CPU", callback=measurement_callbacks.get_cpu, interval=0.1),
             DataStream(name="RAM", callback=measurement_callbacks.get_ram, interval=0.1),
             DataStream(name="Thermal", callback=measurement_callbacks.get_cpu_temp, interval=5),
-            DataStream(name="System", callback=measurement_callbacks.get_system_status, interval=0.1),
+            DataStream(name="System", callback=measurement_callbacks.get_system_status(self.system_state), interval=0.1),
         ]
 
         for source in builtins:
             self.sources[source.name] = source
 
-        # initialize daq stuff if we're on the pi
+        # initialize daq stuff if we're on the pi. this could be more robust!
         if os.uname().machine == "aarch64":
             board = daqhats.mcc118(daqhats.hat_list(filter_by_id=daqhats.HatIDs.ANY)[0].address)
             for channel in range(0, 8):
@@ -141,7 +142,6 @@ class DataManager:
 
         self.queue = asyncio.Queue(maxsize=cache_size)
         self.stop_recording_event = asyncio.Event()
-        self.stop_notify_event = asyncio.Event()
 
     def subscribe(self, stream: DataStream):
         """Register a new data stream with the Data Manager."""
@@ -176,32 +176,13 @@ class DataManager:
         if self.stop_recording_event.is_set():
             self.stop_recording_event.clear()
 
-        if self.stop_notify_event.is_set():
-            self.stop_notify_event.clear()
-
         self.recording_task = asyncio.create_task(self.record(sources, filepath, interval))
-        self.notify_task = asyncio.create_task(self.notify())
 
     async def stop_recording(self):
         """Stop data recording task."""
         self.stop_recording_event.set()
-        self.stop_notify_event.set()
         await self.recording_task
-        await self.notify_task
-        await self.queue.put(
-            websocket.Message(
-                header=websocket.Header(
-                    name="System",
-                    timestamp=datetime.now(),
-                ),
-                payload=[
-                    websocket.PayloadField(
-                        name="recording",
-                        value=0,
-                    ),
-                ],
-            )
-        )
+        self.recording_task = None
 
     async def notify(self) -> None:
         """Send DAQ status messages to the ConnectionManager queue."""
@@ -222,7 +203,7 @@ class DataManager:
             )
             await asyncio.sleep(1)
 
-    async def record(self, sources: List[str], filepath: Path, interval: float, batch_size: int = 100):
+    async def record(self, sources: List[websocket.MessageConfiguration], filepath: Path, interval: float, batch_size: int = 100):
         """
         Asynchronous recording task.
 
@@ -233,27 +214,38 @@ class DataManager:
         When the coroutine is called to stop, any remaining measurements will be written to the file
         and the file will be closed.
         """
-        # gather up all the callbacks for the sources specified
-        callbacks = []
+        # gather up all the callbacks for the sources specified, also create a header row
+        callbacks: List[Callable[[], List[websocket.PayloadField]]] = []
+        headers = ["timestamp"]
+
         for source in sources:
-            if stream := self.sources.get(source):
+            if stream := self.sources.get(source.header.name):
                 callbacks.append(stream.callback)
 
-        # and add a timestamp column
-        sources.insert(0, "timestamp")
+                for field in source.payload:
+                    if field.enabled:
+                        if field.units:
+                            headers.append(f"{source.header.name} - {field.name} ({field.units})")
+                        else:
+                            headers.append(f"{source.header.name} - {field.name}")
 
         measurements = []
-
         # basically ensure with try/finally that the coroutine always cleans up and writes the file.
         try:
+            self.system_state.recording = True
             with open(filepath, "w") as csvfile:
+                # open up the file and write the header row
                 csvwriter = csv.writer(csvfile)
-                csvwriter.writerow(sources)
+                csvwriter.writerow(headers)
 
                 while not self.stop_recording_event.is_set():
                     measurement_row = [datetime.now()]
-                    for callback in callbacks:
-                        measurement_row.append(callback())
+                    for callback, configuration in zip(callbacks, sources):
+                        result = callback()
+                        for field, field_configuration in zip(result, configuration.payload):
+                            if field_configuration.enabled:
+                                measurement_row.append(field.value)
+
                     measurements.append(measurement_row)
 
                     if len(measurements) >= batch_size:
@@ -267,3 +259,4 @@ class DataManager:
                 csvwriter = csv.writer(csvfile)
                 csvwriter.writerows(measurements)
                 csvfile.close()
+            self.system_state.recording = False
