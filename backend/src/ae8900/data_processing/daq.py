@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, List
 
+import daqhats
+
 from ae8900.data_processing import measurement_callbacks
 from ae8900.models import core, websocket
 
@@ -129,8 +131,9 @@ class DataManager:
 
         # initialize daq stuff if we're on the pi
         if os.uname().machine == "aarch64":
+            board = daqhats.mcc118(daqhats.hat_list(filter_by_id=daqhats.HatIDs.ANY)[0].address)
             for channel in range(0, 8):
-                self.sources[f"MCCDAQ Channel {channel}"] = DataStream(name=f"MCCDAQ Channel {channel}", callback=measurement_callbacks.get_daq_channel(channel), interval=0.1)
+                self.sources[f"MCCDAQ Channel {channel}"] = DataStream(name=f"MCCDAQ Channel {channel}", callback=measurement_callbacks.get_daq_channel(board, channel), interval=0.1)
 
         # initialize the rest of the stuff
         for source in sources:

@@ -76,9 +76,8 @@ def get_system_status() -> List[PayloadField]:
     return payload
 
 
-def get_daq_channel(channel: int = 0) -> Callable[[], List[PayloadField]]:
+def get_daq_channel(board: daqhats.mcc118, channel: int = 0) -> Callable[[], List[PayloadField]]:
     def callback() -> List[PayloadField]:
-        board = daqhats.mcc118(daqhats.hat_list(filter_by_id=daqhats.HatIDs.ANY)[0])
         payload = [
             PayloadField(
                 name="Channel",
