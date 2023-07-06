@@ -58,8 +58,6 @@
             yAxis: {
                 type: 'value',
                 name: '(%)',
-                min: 0,
-                max: 100,
                 boundaryGap: [0, '100%'],
                 splitLine: {
                     show: false
