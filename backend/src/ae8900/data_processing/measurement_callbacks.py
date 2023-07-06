@@ -1,8 +1,10 @@
 """Functions that can be called by a DataStream to make a measurement."""
+import struct
 from typing import Callable, List
 
 import daqhats
 import psutil
+import smbus2
 
 from ae8900.models import core
 from ae8900.models.websocket import PayloadField
@@ -93,6 +95,42 @@ def get_daq_channel(board: daqhats.mcc118, channel: int = 0) -> Callable[[], Lis
                 value=board.a_in_read(channel),
                 units="V",
             )
+        ]
+
+        return payload
+
+    return callback
+
+
+def get_imu(bus: smbus2.SMBus) -> Callable[[], List[PayloadField]]:
+    def callback() -> List[PayloadField]:
+        address = 0x10
+        data_format = "ffff"
+        num_bytes = struct.calcsize(data_format)
+        data_bytes = bus.read_i2c_block_data(address, 0, num_bytes)
+        real, i, j, k = struct.unpack(data_format, bytes(data_bytes))
+
+        payload = [
+            PayloadField(
+                name="Real",
+                value=real,
+                units=None,
+            ),
+            PayloadField(
+                name="i",
+                value=i,
+                units=None,
+            ),
+            PayloadField(
+                name="j",
+                value=j,
+                units=None,
+            ),
+            PayloadField(
+                name="k",
+                value=k,
+                units=None,
+            ),
         ]
 
         return payload

@@ -44,15 +44,16 @@
             # python and necessary packages
             (python.withPackages (ps:
               with ps; [
-                pip
-                fastapi
-                psutil
-                websockets
-                uvicorn
-                python-dotenv
                 black
-                isort
+                fastapi
                 flit
+                isort
+                pip
+                psutil
+                python-dotenv
+                smbus2
+                uvicorn
+                websockets
               ]))
             daqhats
             pkgs.nixfmt
