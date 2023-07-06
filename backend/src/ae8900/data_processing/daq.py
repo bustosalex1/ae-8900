@@ -2,6 +2,7 @@
 import asyncio
 import csv
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, List
@@ -125,6 +126,11 @@ class DataManager:
 
         for source in builtins:
             self.sources[source.name] = source
+
+        # initialize daq stuff if we're on the pi
+        if os.uname().machine == "aarch64":
+            for channel in range(0, 8):
+                self.sources[f"MCCDAQ Channel {channel}"] = DataStream(name=f"MCCDAQ Channel {channel}", callback=measurement_callbacks.get_daq_channel(channel), interval=0.1)
 
         # initialize the rest of the stuff
         for source in sources:
