@@ -36,7 +36,7 @@ class PayloadField(BaseModel):
     """
 
     name: str
-    value: int | float
+    value: float | int
     units: str | None
 
 

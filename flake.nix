@@ -57,6 +57,7 @@
               ]))
             daqhats
             pkgs.nixfmt
+            pkgs.sc-im
             pkgs.ruff
             pkgs.tmux
             pkgs.tmuxp
