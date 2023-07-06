@@ -1,7 +1,7 @@
 session_name: servers
 shell_command_before:
   - >
-      if [ -n "$IN_NIX_SHELL" ]; then nix develop; fi
+      bash -c 'if [ -n "$IN_NIX_SHELL" ]; then nix develop; fi'
 windows:
   - window_name: hosted-servers
     layout: even-horizontal
