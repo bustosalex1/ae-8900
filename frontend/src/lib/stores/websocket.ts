@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store'
 import { apiCall, put, type Message, type Field, type MessageConfiguration } from '$lib/api'
+import { tweened, type Tweened } from 'svelte/motion'
 
 /**
  * A measurement store is basically a store that contains a list of messages of a certain type, or
@@ -42,10 +43,19 @@ export const createMeasurementStore = (message: Message | MessageConfiguration) 
         }
     )
 
+    const latest = new Map<string, Tweened<number>>()
+
+    const updateLatest = (message: Message) => {
+        for (const { name, value } of message.payload) {
+            latest.get(name)?.set(value)
+        }
+    }
+
     // initialize field lists
     update((queueMap) => {
         for (const field of message.payload) {
             queueMap.set(field.name, [])
+            latest.set(field.name, tweened(0, { duration: 500 }))
         }
 
         return queueMap
@@ -54,7 +64,9 @@ export const createMeasurementStore = (message: Message | MessageConfiguration) 
     return {
         subscribe,
         set,
-        update
+        update,
+        latest,
+        updateLatest
     }
 }
 

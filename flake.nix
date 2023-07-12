@@ -19,22 +19,68 @@
       forAllSystems = f:
         nixpkgs.lib.genAttrs allSystems
         (system: f { pkgs = import nixpkgs { inherit system; }; });
+
+      # github source for the daqhats library and python package
+      daqhatsSrc = { pkgs }:
+        pkgs.fetchFromGitHub {
+          owner = "mccdaq";
+          repo = "daqhats";
+          rev = "e6d96c8fb621c83696536a037f1c4fa373c46068";
+          sha256 = "7+KEbyvmHCsT9O90V2mGDe6OWU8sQmVph5BHN9e4xj0=";
+        };
     in {
+      packages = forAllSystems ({ pkgs }: {
+        libdaqhats = pkgs.stdenv.mkDerivation {
+          pname = "libdaqhats";
+          version = "1.4.0.6";
+
+          src = daqhatsSrc { inherit pkgs; };
+
+          buildInputs = with pkgs; [ gcc autoPatchelfHook libraspberrypi ];
+
+          propagatedBuildInputs = [ pkgs.glibc ];
+
+          postPatch = ''
+            substituteInPlace lib/makefile \
+              --replace 'INSTALL_DIR = /usr/local/lib' 'INSTALL_DIR = \$\(out\)/lib' \
+              --replace 'ldconfig' '# ldconfig'
+
+            substituteInPlace include/makefile \
+              --replace 'INSTALL_DIR = /usr/local/include' 'INSTALL_DIR = \$\(out\)/include'
+          '';
+
+          buildPhase = ''
+            make -C lib all
+          '';
+
+          installPhase = ''
+            mkdir -p $out/lib
+            cp lib/build/libdaqhats.so.$version $out/lib/libdaqhats.so.$version
+            ln -s $out/lib/libdaqhats.so.$version $out/lib/libdaqhats.so
+            ln -s $out/lib/libdaqhats.so.$version $out/lib/libdaqhats.so.1
+          '';
+          dontStrip = true;
+
+        };
+
+        daqhats = pkgs.python3Packages.buildPythonPackage {
+          name = "daqhats";
+          version = "1.4.0.4";
+          src = daqhatsSrc { inherit pkgs; };
+          doCheck = false;
+
+          postPatch = ''
+            substituteInPlace daqhats/hats.py \
+              --replace 'libdaqhats.so.1' \
+              '${self.packages.${pkgs.system}.libdaqhats}/lib/libdaqhats.so.1'
+          '';
+
+        };
+      });
+
       # Development environment output
       devShells = forAllSystems ({ pkgs }: {
         default = let
-          daqhats = pkgs.python3Packages.buildPythonPackage {
-            name = "daqhats";
-            version = "1.4.0.4";
-            src = pkgs.fetchFromGitHub {
-              owner = "mccdaq";
-              repo = "daqhats";
-              rev = "e6d96c8fb621c83696536a037f1c4fa373c46068";
-              sha256 = "7+KEbyvmHCsT9O90V2mGDe6OWU8sQmVph5BHN9e4xj0=";
-            };
-            doCheck = false;
-
-          };
           # use Python 3.11
           python = pkgs.python311;
         in pkgs.mkShell {
@@ -55,7 +101,7 @@
                 uvicorn
                 websockets
               ]))
-            daqhats
+            self.packages.${pkgs.system}.daqhats
             pkgs.nixfmt
             pkgs.sc-im
             pkgs.ruff

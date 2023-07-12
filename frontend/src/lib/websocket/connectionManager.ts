@@ -7,8 +7,8 @@ import {
     type MessageConfiguration
 } from '$lib/api'
 import { PUBLIC_HOST_IP } from '$env/static/public'
-import type { Unsubscriber, Writable } from 'svelte/store'
-import { createMeasurementStore } from '$lib/stores'
+import type { Unsubscriber } from 'svelte/store'
+import { createMeasurementStore, type MessageStore } from '$lib/stores'
 
 /**
  * Manages a WebSocket connection to the AE 8900 backend. This will begin a connection on page load,
@@ -18,7 +18,7 @@ import { createMeasurementStore } from '$lib/stores'
  */
 class ConnectionManager {
     private websocket: WebSocket
-    public messageQueues: Map<string, Writable<Map<string, Field[]>>>
+    public messageQueues: Map<string, MessageStore>
     public cacheSize: number
 
     /**
@@ -30,7 +30,7 @@ class ConnectionManager {
     constructor(url: string, cacheSize: number) {
         this.websocket = new WebSocket(url)
         this.cacheSize = cacheSize
-        this.messageQueues = new Map<string, Writable<Map<string, Field[]>>>()
+        this.messageQueues = new Map<string, MessageStore>()
 
         // setup the callback to handle new messages as they arrive
         this.websocket.onmessage = (event: MessageEvent<string>) => {
@@ -75,6 +75,8 @@ class ConnectionManager {
 
                     return queueMap
                 })
+
+            this.messageQueues.get(message.header.name)?.updateLatest(message)
         }
     }
 
@@ -156,7 +158,6 @@ export class ComponentDataManager {
             if (!this.unsubscribers.has(source.header.name)) {
                 // ... get it from the connection manager
                 const store = connectionManager.getMeasurementStream(source.header.name)
-                console.log('trying to subscribe to ', store)
                 if (store) {
                     const unsubscribe = store.subscribe((data) => {
                         this.dataMap.set(source.header.name, data)
