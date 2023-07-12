@@ -24,7 +24,7 @@ start-backend: _clear-environment
 
 # start the backend development server and expose it on the network
 host-backend:
-    cd backend && uvicorn src.main:app --host 0.0.0.0 --port 8000
+    cd backend/src && uvicorn ae8900.main:app --host 0.0.0.0 --port 8000
 
 # start the frontend development server and expose it on the network
 host-frontend:
