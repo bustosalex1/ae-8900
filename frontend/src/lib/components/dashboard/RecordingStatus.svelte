@@ -13,7 +13,7 @@
 
     $: canRecord = recordingFrequency > 0
 
-    // kick of a recording with the parameters the user has specified when the `record` button is clicked
+    // kick off a recording with the parameters the user has specified when the `record` button is clicked
     const onRecord = () => {
         console.log(1 / recordingFrequency)
         apiCall(

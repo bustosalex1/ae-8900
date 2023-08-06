@@ -2,6 +2,8 @@ import LineChart from './LineChart.svelte'
 import ReactiveChart from './ReactiveChart.svelte'
 import SystemStatus from './SystemStatus.svelte'
 import RecordingStatus from './RecordingStatus.svelte'
+import Orientation from './Orientation.svelte'
+
 import type { SvelteComponent } from 'svelte'
 
 /**
@@ -11,5 +13,6 @@ export const componentRegistry: Record<string, typeof SvelteComponent<any>> = {
     LineChart: LineChart,
     ReactiveChart: ReactiveChart,
     SystemStatus: SystemStatus,
-    RecordingStatus: RecordingStatus
+    RecordingStatus: RecordingStatus,
+    Orientation: Orientation
 }
