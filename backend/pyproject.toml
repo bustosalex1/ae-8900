@@ -1,0 +1,28 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "ae8900"
+authors = [{ name = "Alex Bustos", email = "bustosalex1@gmail.com" }]
+version = "0.1"
+description = "Backend API for my AE8900 project."
+dependencies = [
+    "fastapi==0.95.1",
+    "psutil==5.9.5",
+    "python-dotenv==1.0.0",
+    "pyyaml==6.0",
+    "smbus2==0.4.2",
+    "uvicorn==0.20.0",
+    "websockets==10.4",
+    "daqhats@git+https://github.com/mccdaq/daqhats",
+]
+requires-python = ">=3.11"
+
+[project.urls]
+Home = "https://github.com/bustosalex1/ae-8900"
+
+[tool.ruff]
+select = ["D"]
+ignore = ["D212", "D203"]
+line-length = 200

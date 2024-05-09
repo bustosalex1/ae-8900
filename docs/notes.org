@@ -57,17 +57,55 @@
 
    I also flashed the Raspberry Pi SD card with Raspberry Pi OS Lite.
 
-** Week 3 6/5/2023 - 6/11/2023
-   This week I met with Dr. Gunter to discuss the state of my project so far. We met on 6/08/2023.
-   Some meeting notes are below:
-   - Dr. Gunter's lab is starting to produce a number of custom EPS boards for an undergraduate
-     class coming up in the fall, and it would be cool to be able to test them with this project.
-     This would be useful in helping to deliver the EPS boards and also serve as a real
-     demonstration of project capabilities.
-   - The timeline for the above would start around July, so it would be necessary to have basic
-     functionality across the software stack operational by then.
-   - It would be cool to open source the project to share with the CubeSat community, and
-     potentially work on it as a journal paper.
-   - In general, the only requirement for configuring the project system to test something should be
-     an ICD or API.
+** Week 3, 6/5/2023 - 6/11/2023
+*** Meeting with Dr. Gunter
+    This week I met with Dr. Gunter to discuss the state of my project so far. We met on 6/08/2023.
+    Some meeting notes are below:
+    - Dr. Gunter's lab is starting to produce a number of custom EPS boards for an undergraduate
+      class coming up in the fall, and it would be cool to be able to test them with this project.
+      This would be useful in helping to deliver the EPS boards and also serve as a real
+      demonstration of project capabilities.
+    - The timeline for the above would start around July, so it would be necessary to have basic
+      functionality across the software stack operational by then.
+    - It would be cool to open source the project to share with the CubeSat community, and
+      potentially work on it as a journal paper.
+    - In general, the only requirement for configuring the project system to test something should be
+      an ICD or API.
 
+*** Other Notes
+    This week I really started building out the foundation of the application. I spent a decent
+    amount of time on the basics of the frontend, trying to make it pretty flexible to support
+    different layouts and dashboard styles. I experimented some with ECharts, and basically got to
+    the point where I am able to stream random data from the backend to the frontend over a
+    WebSocket, and have a line chart update in real time with data from the backend.
+
+** Week 4, 6/12/2023 - 6/18/2023
+*** 6/12/2023 Notes
+    Last week was pretty solid in terms of getting a lot of stuff scaffolded and prototyped, and I
+    would like to keep that up this week. Here are some priorities I would like to focus on.
+**** DONE Complete Dynamic Component Rendering Scheme
+     CLOSED: [2023-06-17 Sat 11:58]
+     Last week I worked out the general scheme by which components can be dynamically rendered, and
+     also worked out how I can automatically generate a string to component mapping of all the
+     dashboard components that can be rendered. I would like to use this map to make it so that a
+     user can select the type of new component they want when pressing the "+" button on a column on
+     the frontend.
+**** TODO Complete Basic Settings Panel
+     I started working on a generic chart settings panel that can be accessed on any chart component
+     when you click the edit button on the top right of an expanded chart component. Right now this
+     doesn't do anything and doesn't include really substantial settings. I would like to build this
+     out so that:
+     a. changes made on the settings panel are actually stored in the project state and propagate
+     through to the corresponding dashboard component
+     b. the available settings are actually applicable to the component they are on
+**** TODO Start Building Out WebSocket Receiver
+     Last week I did some very basic stuff with streaming data via a WebSocket from the backend to
+     the frontend. I think that this scheme will work well for providing data to the various graphs
+     on the frontend, and I would like to accomplish this using Svelte stores that are managed by a
+     sort of connection manager entity that basically sorts incoming data into different stores that
+     different graphs can subscribe / unsubscribe to.
+**** DONE Try out OpenAPI Generation Tools
+     CLOSED: [2023-06-14 Wed 19:26]
+     It seems like I should be able to use some of the OpenAPI generation tools out there to
+     automatically make some API stubs for the frontend for the backend API. I would like to try
+     this out and investigate its feasibility.
